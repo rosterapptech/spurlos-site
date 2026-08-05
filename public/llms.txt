@@ -1,0 +1,40 @@
+# Spurlos
+
+> Spurlos ist eine iOS-App, die Metadaten aus Dateien sichtbar macht und
+> entfernt: EXIF- und GPS-Daten aus Fotos, Geräte- und Softwareangaben aus
+> Videos und Audio, Autorennamen und interne Pfade aus PDF- und Office-
+> Dokumenten. Die App enthält keinerlei Netzwerkcode – alles passiert lokal auf
+> dem Gerät, ohne Server, Konto oder Tracking.
+
+## Was Spurlos ist
+- Plattform: native iOS-App (iPhone), gebaut mit SwiftUI
+- Zielgruppe: alle, die Fotos oder Dokumente teilen, ohne Standort, Namen und Gerätedaten mitzuliefern – Journalismus, Verkaufsanzeigen, Bewerbungen, Dating, Behördenpost
+- Datenschutz: kein Netzwerkcode in der App, kein Backend, kein Konto, kein Tracking, keine Werbung
+- Sprachen: Deutsch, Englisch
+- Anbieter: Slowcraft (Elias Wilkening)
+
+## Hauptfunktionen
+- Analyse: zeigt alle gefundenen Metadaten inklusive GPS-Position auf einer Karte, jeder Fund mit Erklärung – kostenlos und unbegrenzt für alle Formate
+- Bereinigen ohne Qualitätsverlust: Fotos und Videos werden nicht neu kodiert, das Original bleibt unverändert, man erhält eine saubere Kopie
+- Selbstprüfung: nach dem Bereinigen liest die App die Datei erneut ein und meldet Erfolg nur, wenn kein Feld mehr gefunden wird
+- Office-Tiefenreinigung: entfernt zusätzlich Autoren in Kommentaren und Änderungsverfolgung, interne Dateipfade und eingebettete Vorschaubilder
+- Teilen-Menü: Analyse und Bereinigung direkt aus dem iOS-Teilen-Blatt, ohne die App zu öffnen
+- Stapelverarbeitung und Kurzbefehle-Aktion für Automationen
+
+## Unterstützte Formate (Tiefenreinigung)
+- Bilder: JPG, JPEG, HEIC, HEIF, AVIF, PNG, TIFF, GIF, BMP, SVG
+- Video: MP4, MOV, M4V, 3GP
+- Audio: MP3, M4A, WAV, AIFF
+- Dokumente: PDF, DOCX, XLSX, PPTX, ODT, ODS, ODP, Pages, Numbers, Keynote
+- Weitere Formate (RAW, Archive, Geodaten, E-Books u. a.) werden auf Dateisystem-Ebene bereinigt: Herkunfts-URL, Tags, Kommentare, erweiterte Attribute
+
+## Preise
+- Kostenlos: unbegrenzte Analyse aller Formate, Bereinigung von Fotos
+- Spurlos Pro: 6,99 € Einmalkauf, kein Abo – PDF/Office, Video/Audio, Stapelverarbeitung, selektives Entfernen einzelner Felder, Kurzbefehle
+
+## Links
+- Startseite: https://spurlosapp.com/
+- English: https://spurlosapp.com/en/
+- Unterstützte Formate: https://spurlosapp.com/unterstuetzte-formate/
+- Blog: https://spurlosapp.com/blog/
+- App Store: noch nicht veröffentlicht

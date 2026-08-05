@@ -1,0 +1,14 @@
+---
+import FeaturePage from '../../../components/FeaturePage.astro';
+import { featureSlugs, type FeatureSlug } from '../../../config/features';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return featureSlugs.map((slug) => ({ params: { slug }, props: { slug } }));
+}
+
+const { slug } = Astro.props as { slug: FeatureSlug };
+---
+
+<FeaturePage lang="en" slug={slug} />

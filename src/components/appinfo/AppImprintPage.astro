@@ -1,0 +1,90 @@
+---
+import AppInfoLayout from '../../layouts/AppInfoLayout.astro';
+import type { Lang } from '../../i18n/ui';
+import { contact } from '../../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const de = lang === 'de';
+---
+
+<AppInfoLayout
+  lang={lang}
+  path="/appinfo/impressum"
+  activeTab="impressum"
+  title={de ? 'Impressum – Spurlos App' : 'Imprint – Spurlos app'}
+  description={de
+    ? 'Impressum und Anbieterkennzeichnung gemäß § 5 DDG für die Spurlos iOS-App.'
+    : 'Imprint and provider identification under § 5 DDG for the Spurlos iOS app.'}
+>
+  <h1>{de ? 'Impressum' : 'Imprint'}</h1>
+  <p class="updated">
+    {de
+      ? 'Angaben gemäß § 5 DDG (Digitale-Dienste-Gesetz)'
+      : 'Information pursuant to § 5 DDG (German Digital Services Act)'}
+  </p>
+
+  <p>
+    <strong>{contact.name}</strong><br />
+    {contact.company}<br />
+    {contact.street}<br />
+    {contact.city}<br />
+    {de ? contact.country : 'Germany'}
+  </p>
+
+  <h2>{de ? 'Kontakt' : 'Contact'}</h2>
+  <p>
+    {de ? 'E-Mail' : 'Email'}: <a href={`mailto:${contact.email}`}>{contact.email}</a><br />
+    {de ? 'Telefon' : 'Phone'}:
+    <a href={`tel:${contact.phone.replace(/\s/g, '')}`}>{contact.phone}</a>
+  </p>
+
+  <h2>{de ? 'Umsatzsteuer' : 'VAT'}</h2>
+  <p>
+    {
+      de
+        ? 'Umsatzsteuer-Identifikationsnummer gemäß § 27 a UStG:'
+        : 'VAT identification number pursuant to § 27 a UStG:'
+    }
+    <br />
+    <strong>{contact.ustId}</strong>
+  </p>
+
+  <h2>{de ? 'Verantwortlich für den Inhalt' : 'Responsible for content'}</h2>
+  <p>
+    <strong>{contact.name}</strong>{de ? ', Anschrift wie oben.' : ', address as above.'}
+  </p>
+
+  <h2>{de ? 'Streitschlichtung' : 'Dispute resolution'}</h2>
+  <p>
+    {
+      de
+        ? 'Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: '
+        : 'The European Commission provides a platform for online dispute resolution: '
+    }
+    <a
+      href={de
+        ? 'https://consumer-redress.ec.europa.eu/index_en?prefLang=de'
+        : 'https://consumer-redress.ec.europa.eu/index_en'}
+      rel="noopener">consumer-redress.ec.europa.eu</a
+    >.
+  </p>
+  <p>
+    {
+      de
+        ? 'Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.'
+        : 'We are neither willing nor obliged to participate in dispute resolution proceedings before a consumer arbitration board.'
+    }
+  </p>
+
+  <h2>{de ? 'Urheberrecht' : 'Copyright'}</h2>
+  <p>
+    {
+      de
+        ? 'Die durch den Betreiber erstellten Inhalte und Werke unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors.'
+        : 'The content and works created by the operator are subject to German copyright law. Reproduction, editing, distribution and any kind of use beyond the limits of copyright require the written consent of the respective author.'
+    }
+  </p>
+</AppInfoLayout>

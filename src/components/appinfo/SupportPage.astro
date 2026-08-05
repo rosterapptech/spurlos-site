@@ -1,0 +1,120 @@
+---
+import AppInfoLayout from '../../layouts/AppInfoLayout.astro';
+import type { Lang } from '../../i18n/ui';
+import { contact } from '../../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const de = lang === 'de';
+const privacyHref = de ? '/appinfo/datenschutzrichtlinie/' : '/en/appinfo/datenschutzrichtlinie/';
+const formatsHref = de ? '/unterstuetzte-formate/' : '/en/supported-formats/';
+---
+
+<AppInfoLayout
+  lang={lang}
+  path="/appinfo/support"
+  activeTab="support"
+  title={de ? 'Support – Spurlos App' : 'Support – Spurlos app'}
+  description={de
+    ? 'Support und Hilfe für die Spurlos iOS-App. Kontakt per E-Mail und Telefon.'
+    : 'Support and help for the Spurlos iOS app. Contact by email and phone.'}
+>
+  <h1>Support</h1>
+  <p class="updated">{de ? 'Wir helfen dir gern weiter' : 'We are happy to help'}</p>
+
+  <p>
+    {
+      de
+        ? 'Du hast eine Frage, brauchst Hilfe oder möchtest einen Fehler melden? Melde dich einfach – wir kümmern uns darum.'
+        : 'Got a question, need help or want to report a bug? Just get in touch — we will take care of it.'
+    }
+  </p>
+
+  <h2>{de ? 'Kontakt' : 'Contact'}</h2>
+  <p>
+    {de ? 'E-Mail' : 'Email'}: <a href={`mailto:${contact.email}`}>{contact.email}</a><br />
+    {de ? 'Telefon' : 'Phone'}:
+    <a href={`tel:${contact.phone.replace(/\s/g, '')}`}>{contact.phone}</a>
+  </p>
+  <p>
+    {
+      de
+        ? 'Wir antworten in der Regel innerhalb von 48 Stunden (werktags).'
+        : 'We usually reply within 48 hours (on business days).'
+    }
+  </p>
+
+  <h2>{de ? 'Häufige Fragen' : 'Frequently asked questions'}</h2>
+
+  <h3>{de ? 'Wo werden meine Dateien verarbeitet?' : 'Where are my files processed?'}</h3>
+  <p>
+    {
+      de
+        ? 'Ausschließlich auf deinem Gerät. Spurlos enthält keinerlei Netzwerkcode – es gibt keinen Server, keine Cloud und kein Konto. Mehr dazu in der '
+        : 'Exclusively on your device. Spurlos contains no networking code at all — there is no server, no cloud and no account. More in the '
+    }
+    <a href={privacyHref}>{de ? 'Datenschutzerklärung' : 'privacy policy'}</a>.
+  </p>
+
+  <h3>
+    {
+      de
+        ? 'Wird mein Original beim Bereinigen verändert?'
+        : 'Is my original modified when cleaning?'
+    }
+  </h3>
+  <p>
+    {
+      de
+        ? 'Nein. Spurlos legt immer eine bereinigte Kopie an, die Ausgangsdatei bleibt unangetastet. Fotos und Videos werden dabei nicht neu kodiert.'
+        : 'No. Spurlos always creates a cleaned copy and leaves the source file untouched. Photos and videos are never re-encoded in the process.'
+    }
+  </p>
+
+  <h3>
+    {de ? 'Mein Format wird nicht unterstützt – und jetzt?' : 'My format is not supported — now what?'}
+  </h3>
+  <p>
+    {
+      de
+        ? 'Eine Übersicht aller Formate findest du unter '
+        : 'You can find an overview of all formats at '
+    }
+    <a href={formatsHref}>{de ? 'Unterstützte Formate' : 'Supported formats'}</a>
+    {
+      de
+        ? '. Fehlt deins, schreib uns – die Liste wächst mit den Anfragen.'
+        : '. If yours is missing, write to us — the list grows with the requests.'
+    }
+  </p>
+
+  <h3>{de ? 'Wie stelle ich meinen Kauf wieder her?' : 'How do I restore my purchase?'}</h3>
+  <p>
+    {
+      de
+        ? 'Spurlos Pro ist ein Einmalkauf, der an deine Apple-ID gebunden ist. Nach einem Gerätewechsel oder einer Neuinstallation tippst du in den Einstellungen der App auf „Käufe wiederherstellen".'
+        : 'Spurlos Pro is a one-time purchase tied to your Apple ID. After switching devices or reinstalling, tap "Restore purchases" in the app settings.'
+    }
+  </p>
+
+  <h3>{de ? 'Wie lösche ich meine Daten?' : 'How do I delete my data?'}</h3>
+  <p>
+    {
+      de
+        ? 'Die App speichert nur den Verlauf deiner Bereinigungen lokal auf dem Gerät. Du kannst ihn in der App leeren; beim Deinstallieren wird er vollständig entfernt.'
+        : 'The app only stores the history of your cleanings, locally on the device. You can clear it inside the app; uninstalling removes it completely.'
+    }
+  </p>
+
+  <h2>Feedback</h2>
+  <p>
+    {
+      de
+        ? 'Wir freuen uns über Vorschläge und Ideen. Schreib uns gern an '
+        : 'We welcome suggestions and ideas. Write to us at '
+    }
+    <a href={`mailto:${contact.email}`}>{contact.email}</a>.
+  </p>
+</AppInfoLayout>

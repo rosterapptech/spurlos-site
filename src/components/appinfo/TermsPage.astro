@@ -1,0 +1,147 @@
+---
+import AppInfoLayout from '../../layouts/AppInfoLayout.astro';
+import type { Lang } from '../../i18n/ui';
+import { contact, app, legalUpdated } from '../../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const de = lang === 'de';
+const stand = de ? legalUpdated.de : legalUpdated.en;
+const price = de ? app.proPrice : app.proPriceEn;
+const privacyHref = de ? '/appinfo/datenschutzrichtlinie/' : '/en/appinfo/datenschutzrichtlinie/';
+---
+
+<AppInfoLayout
+  lang={lang}
+  path="/appinfo/agb"
+  activeTab="terms"
+  title={de ? 'Nutzungsbedingungen – Spurlos App' : 'Terms of use – Spurlos app'}
+  description={de
+    ? `Allgemeine Nutzungsbedingungen der Spurlos iOS-App. Stand: ${stand}.`
+    : `Terms of use for the Spurlos iOS app. Last updated: ${stand}.`}
+>
+  <h1>{de ? 'Allgemeine Nutzungsbedingungen' : 'Terms of use'}</h1>
+  <p class="updated">{de ? `Stand: ${stand}` : `Last updated: ${stand}`}</p>
+
+  <h2>{de ? '1. Geltungsbereich' : '1. Scope'}</h2>
+  <p>
+    {
+      de
+        ? 'Diese Nutzungsbedingungen regeln die Nutzung der iOS-App Spurlos durch dich als Nutzer·in. Anbieter:'
+        : 'These terms govern your use of the Spurlos iOS app. Provider:'
+    }
+  </p>
+  <p>
+    <strong>{contact.name}</strong> · {contact.company} · {contact.street}, {contact.city}<br />
+    {de ? 'E-Mail' : 'Email'}: <a href={`mailto:${contact.email}`}>{contact.email}</a>
+  </p>
+  <p>
+    {
+      de
+        ? 'Die App wird ausschließlich über den Apple App Store vertrieben. Ergänzend gelten die '
+        : 'The app is distributed exclusively through the Apple App Store. The '
+    }
+    <a href="https://www.apple.com/legal/internet-services/itunes/de/terms.html" rel="noopener">
+      {de ? 'Apple-Media-Services-Bedingungen' : 'Apple Media Services Terms'}
+    </a>
+    {de ? '.' : ' apply in addition.'}
+  </p>
+
+  <h2>{de ? '2. Leistungsbeschreibung' : '2. What the app does'}</h2>
+  <p>
+    {
+      de
+        ? 'Spurlos analysiert Dateien auf enthaltene Metadaten und erstellt auf Wunsch eine bereinigte Kopie. Die Verarbeitung findet ausschließlich lokal auf dem Gerät statt; die App enthält keinen Netzwerkcode.'
+        : 'Spurlos analyses files for embedded metadata and, on request, produces a cleaned copy. All processing happens locally on the device; the app contains no networking code.'
+    }
+  </p>
+
+  <h3>{de ? '2.1 Kostenfreie Funktionen' : '2.1 Free features'}</h3>
+  <ul>
+    <li>{de ? 'Unbegrenzte Analyse aller unterstützten Formate' : 'Unlimited analysis of all supported formats'}</li>
+    <li>{de ? 'Bereinigung von Bilddateien' : 'Cleaning of image files'}</li>
+    <li>{de ? 'Nutzung im Teilen-Menü' : 'Use from the share sheet'}</li>
+  </ul>
+
+  <h3>{de ? '2.2 Spurlos Pro' : '2.2 Spurlos Pro'}</h3>
+  <p>
+    {
+      de
+        ? `Spurlos Pro ist ein Einmalkauf für ${price} (kein Abonnement) und schaltet frei: Bereinigung von PDF-, Office-, OpenDocument- und iWork-Dokumenten sowie von Video- und Audiodateien, Stapelverarbeitung, selektives Entfernen einzelner Felder sowie die Kurzbefehle-Aktion.`
+        : `Spurlos Pro is a one-time purchase of ${price} (not a subscription) and unlocks: cleaning of PDF, Office, OpenDocument and iWork documents as well as video and audio files, batch processing, selective removal of individual fields and the Shortcuts action.`
+    }
+  </p>
+
+  <h2>{de ? '3. Vertragsschluss und Abrechnung' : '3. Contract and billing'}</h2>
+  <p>
+    {
+      de
+        ? 'Der Kaufvertrag über Spurlos Pro kommt zwischen dir und Apple zustande; die Abrechnung erfolgt über deine Apple-ID. Der Kauf ist einmalig, es verlängert sich nichts automatisch. Nach einem Gerätewechsel lässt sich der Kauf in der App über „Käufe wiederherstellen" reaktivieren.'
+        : 'The purchase contract for Spurlos Pro is concluded between you and Apple; billing runs through your Apple ID. The purchase is one-time and nothing renews automatically. After switching devices you can reactivate it in the app via "Restore purchases".'
+    }
+  </p>
+
+  <h2>{de ? '4. Widerrufsrecht' : '4. Right of withdrawal'}</h2>
+  <div class="callout">
+    <p>
+      {
+        de
+          ? 'Du hast das Recht, binnen vierzehn Tagen ohne Angabe von Gründen den Vertrag zu widerrufen. Erstattungsanträge laufen über '
+          : 'You have the right to withdraw from the contract within fourteen days without giving reasons. Refund requests go through '
+      }
+      <a href="https://reportaproblem.apple.com" rel="noopener">reportaproblem.apple.com</a>.
+    </p>
+  </div>
+
+  <h2>{de ? '5. Pflichten der Nutzer·in' : '5. Your obligations'}</h2>
+  <ul>
+    <li>
+      {
+        de
+          ? 'Du nutzt die App nur für Dateien, an denen du die erforderlichen Rechte hast.'
+          : 'You only use the app on files you have the necessary rights to.'
+      }
+    </li>
+    <li>
+      {
+        de
+          ? 'Du sicherst dein Gerät eigenverantwortlich (Bildschirmsperre, Backups).'
+          : 'You are responsible for securing your device (screen lock, backups).'
+      }
+    </li>
+  </ul>
+
+  <h2>{de ? '6. Haftung und Grenzen der Bereinigung' : '6. Liability and limits of cleaning'}</h2>
+  <p>
+    {
+      de
+        ? 'Spurlos entfernt die Metadaten, die es in einer Datei findet, und prüft das Ergebnis anschließend selbst nach. Bei Formaten, deren Inhalt die App nicht auswerten kann, werden ausdrücklich nur die Dateisystem-Spuren entfernt; die App weist im Ergebnis darauf hin. Eine darüber hinausgehende Gewähr, dass eine Datei keinerlei Rückschlüsse mehr zulässt – etwa über den Bildinhalt selbst –, kann naturgemäß nicht übernommen werden.'
+        : 'Spurlos removes the metadata it finds in a file and then verifies the result itself. For formats whose content the app cannot parse, only file system traces are removed, and the app says so explicitly in the result. Beyond that, no guarantee can be given that a file allows no inferences at all — for instance through the image content itself.'
+    }
+  </p>
+  <p>
+    {
+      de
+        ? 'Unbeschränkte Haftung besteht bei Vorsatz und grober Fahrlässigkeit sowie bei Verletzung von Leben, Körper und Gesundheit. Bei einfacher Fahrlässigkeit haften wir nur bei Verletzung wesentlicher Vertragspflichten und begrenzt auf den vorhersehbaren, vertragstypischen Schaden.'
+        : 'We are fully liable for intent and gross negligence and for injury to life, body or health. For ordinary negligence we are liable only for breaches of material contractual duties, limited to foreseeable damage typical of this type of contract.'
+    }
+  </p>
+
+  <h2>{de ? '7. Datenschutz' : '7. Data protection'}</h2>
+  <p>
+    {de ? 'Es gilt unsere ' : 'Our '}
+    <a href={privacyHref}>{de ? 'Datenschutzerklärung' : 'privacy policy'}</a>
+    {de ? '.' : ' applies.'}
+  </p>
+
+  <h2>{de ? '8. Schlussbestimmungen' : '8. Final provisions'}</h2>
+  <p>
+    {
+      de
+        ? 'Es gilt deutsches Recht. Sollte eine Bestimmung unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.'
+        : 'German law applies. Should any provision be invalid, the validity of the remaining provisions is unaffected.'
+    }
+  </p>
+</AppInfoLayout>

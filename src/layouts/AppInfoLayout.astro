@@ -1,0 +1,143 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  path: string;
+  activeTab: 'support' | 'privacy' | 'terms' | 'impressum';
+}
+
+const { lang, title, description, path, activeTab } = Astro.props;
+
+const base = lang === 'de' ? '' : `/${lang}`;
+
+// Pfade sind in allen Sprachen gleich (kein uebersetzter Slug), damit die
+// hreflang-Alternates dem Default in BaseLayout folgen koennen.
+const tabs = [
+  {
+    key: 'support',
+    href: `${base}/appinfo/support/`,
+    label: { de: 'Support', en: 'Support' },
+  },
+  {
+    key: 'privacy',
+    href: `${base}/appinfo/datenschutzrichtlinie/`,
+    label: { de: 'Datenschutz', en: 'Privacy' },
+  },
+  {
+    key: 'terms',
+    href: `${base}/appinfo/agb/`,
+    label: { de: 'AGB', en: 'Terms' },
+  },
+  {
+    key: 'impressum',
+    href: `${base}/appinfo/impressum/`,
+    label: { de: 'Impressum', en: 'Imprint' },
+  },
+];
+---
+
+<BaseLayout lang={lang} path={path} title={title} description={description} noindex={true}>
+  <Header lang={lang} />
+  <main class="prose container">
+    <nav class="page-tabs" aria-label={lang === 'de' ? 'Rechtliche Seiten' : 'Legal pages'}>
+      {
+        tabs.map((tab) => (
+          <a href={tab.href} class={activeTab === tab.key ? 'active' : ''}>
+            {tab.label[lang]}
+          </a>
+        ))
+      }
+    </nav>
+    <slot />
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>
+
+<style>
+  .prose {
+    max-width: 720px;
+    padding-block: 56px 80px;
+  }
+  .page-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    width: fit-content;
+    margin-bottom: 32px;
+  }
+  .page-tabs a {
+    text-decoration: none;
+    color: var(--text-muted);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .page-tabs a:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .page-tabs a.active {
+    background: var(--mint-deep);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(29, 122, 92, 0.4);
+  }
+  :global(.prose h1) {
+    font-size: 2.2rem;
+    margin: 0 0 8px;
+    line-height: 1.15;
+  }
+  :global(.prose .updated) {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin: 0 0 32px;
+  }
+  :global(.prose h2) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 40px 0 12px;
+  }
+  :global(.prose h3) {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 24px 0 8px;
+  }
+  :global(.prose p),
+  :global(.prose ul),
+  :global(.prose ol) {
+    color: var(--text-muted);
+  }
+  :global(.prose ul),
+  :global(.prose ol) {
+    padding-left: 22px;
+  }
+  :global(.prose li) {
+    margin-bottom: 6px;
+  }
+  :global(.prose strong) {
+    color: var(--text);
+  }
+  :global(.prose .callout) {
+    background: rgba(52, 196, 137, 0.08);
+    border-left: 3px solid var(--mint);
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 16px 0;
+  }
+  :global(.prose .callout p) {
+    margin: 0 0 8px;
+  }
+  :global(.prose .callout p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

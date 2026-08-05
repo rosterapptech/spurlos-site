@@ -1,0 +1,26 @@
+{
+  "name": "spurlos-site",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "prebuild": "node scripts/check-blog-links.mjs",
+    "build": "astro build",
+    "postbuild": "node scripts/stamp-sitemap-lastmod.mjs && node scripts/check-internal-links.mjs && node scripts/check-hreflang.mjs",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check-blog-links": "node scripts/check-blog-links.mjs",
+    "check-internal-links": "node scripts/check-internal-links.mjs",
+    "check-hreflang": "node scripts/check-hreflang.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.0.0",
+    "@astrojs/sitemap": "^3.2.0",
+    "@astrojs/vercel": "^8.2.11",
+    "@fontsource-variable/inter": "^5.1.0",
+    "@fontsource-variable/space-grotesk": "^5.1.0",
+    "@vercel/analytics": "^2.0.1",
+    "astro": "^5.1.0"
+  }
+}

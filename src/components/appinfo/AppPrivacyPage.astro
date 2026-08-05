@@ -1,0 +1,172 @@
+---
+import AppInfoLayout from '../../layouts/AppInfoLayout.astro';
+import type { Lang } from '../../i18n/ui';
+import { contact, legalUpdated } from '../../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const de = lang === 'de';
+const stand = de ? legalUpdated.de : legalUpdated.en;
+---
+
+<AppInfoLayout
+  lang={lang}
+  path="/appinfo/datenschutzrichtlinie"
+  activeTab="privacy"
+  title={de ? 'Datenschutzerklärung – Spurlos App' : 'Privacy policy – Spurlos app'}
+  description={de
+    ? `Datenschutzerklärung der Spurlos iOS-App. Kein Netzwerkcode, kein Backend, kein Tracking. Stand: ${stand}.`
+    : `Privacy policy of the Spurlos iOS app. No networking code, no backend, no tracking. Last updated: ${stand}.`}
+>
+  <h1>{de ? 'Datenschutzerklärung' : 'Privacy policy'}</h1>
+  <p class="updated">{de ? `Stand: ${stand}` : `Last updated: ${stand}`}</p>
+
+  <h2>{de ? '1. Verantwortlicher' : '1. Controller'}</h2>
+  <p>
+    <strong>{contact.name}</strong><br />
+    {contact.street} · {contact.city} · {de ? contact.country : 'Germany'}<br />
+    {de ? 'E-Mail' : 'Email'}: <a href={`mailto:${contact.email}`}>{contact.email}</a> ·
+    {de ? 'Telefon' : 'Phone'}:
+    <a href={`tel:${contact.phone.replace(/\s/g, '')}`}>{contact.phone}</a>
+  </p>
+
+  <h2>{de ? '2. Grundsatz: kein Netzwerkcode' : '2. Principle: no networking code'}</h2>
+  <div class="callout">
+    <p>
+      {
+        de
+          ? 'Spurlos enthält keinerlei Netzwerkcode. Die App kann technisch keine Daten senden oder empfangen: Es gibt keinen Spurlos-Server, kein Konto, kein Tracking, keine Analyse-SDKs und keine Werbung. Deine Dateien und die daraus ausgelesenen Metadaten verlassen dein Gerät nicht.'
+          : 'Spurlos contains no networking code at all. The app is technically unable to send or receive data: there is no Spurlos server, no account, no tracking, no analytics SDKs and no ads. Your files and the metadata read from them never leave your device.'
+      }
+    </p>
+  </div>
+
+  <h2>{de ? '3. Welche Daten verarbeitet werden' : '3. Which data is processed'}</h2>
+
+  <h3>{de ? '3.1 Lokal auf deinem Gerät' : '3.1 Locally on your device'}</h3>
+  <ul>
+    <li>
+      {
+        de
+          ? 'Die Dateien, die du auswählst, sowie die darin gefundenen Metadaten – nur für die Dauer der Analyse bzw. Bereinigung im Arbeitsspeicher.'
+          : 'The files you select and the metadata found inside them — held in memory only for the duration of the analysis or cleaning.'
+      }
+    </li>
+    <li>
+      {
+        de
+          ? 'Ein lokaler Verlauf der bereinigten Dateien (Dateiname, Zeitpunkt, Anzahl entfernter Felder) sowie App-Einstellungen.'
+          : 'A local history of cleaned files (file name, time, number of fields removed) and app settings.'
+      }
+    </li>
+    <li>
+      {
+        de
+          ? 'Der Kaufstatus von Spurlos Pro (zwischengespeichert, damit die App-Erweiterung ihn kennt).'
+          : 'The purchase state of Spurlos Pro (cached so the app extension knows about it).'
+      }
+    </li>
+  </ul>
+  <p>
+    {
+      de
+        ? 'Deine Dateien können besondere Kategorien personenbezogener Daten im Sinne von Art. 9 DSGVO enthalten – etwa Gesundheitsangaben in einem PDF oder Standortdaten, die auf Aufenthalt und Gewohnheiten schließen lassen. Auch diese werden ausschließlich lokal verarbeitet, nicht gespeichert und nicht übertragen.'
+        : 'Your files may contain special categories of personal data within the meaning of Art. 9 GDPR — health information in a PDF, say, or location data revealing where you spend your time. This too is processed locally only, never stored and never transmitted.'
+    }
+  </p>
+
+  <h3>{de ? '3.2 Daten, die Apple verarbeitet' : '3.2 Data processed by Apple'}</h3>
+  <ul>
+    <li>
+      <strong>App Store / StoreKit:</strong>{' '}
+      {
+        de
+          ? 'Beim Kauf von Spurlos Pro verarbeitet Apple deine Apple-ID und Zahlungsdaten. Wir erhalten keine Zahlungsdaten, sondern nur die Information, ob ein Kauf vorliegt.'
+          : 'When you buy Spurlos Pro, Apple processes your Apple ID and payment details. We receive no payment data, only whether a purchase exists.'
+      }
+    </li>
+    <li>
+      <strong>{de ? 'Fotos & Dateien' : 'Photos & Files'}:</strong>{' '}
+      {
+        de
+          ? 'Der Zugriff erfolgt über die Systemauswahl von iOS – die App sieht nur die Dateien, die du selbst auswählst.'
+          : 'Access happens through the iOS system picker — the app only ever sees the files you pick yourself.'
+      }
+    </li>
+    <li>
+      <strong>{de ? 'Kurzbefehle' : 'Shortcuts'}:</strong>{' '}
+      {
+        de
+          ? 'Wenn du die Spurlos-Aktion in einem Kurzbefehl verwendest, läuft die Verarbeitung ebenfalls vollständig auf dem Gerät.'
+          : 'If you use the Spurlos action inside a Shortcut, processing also happens entirely on the device.'
+      }
+    </li>
+  </ul>
+
+  <h3>{de ? '3.3 Nicht erhobene Daten' : '3.3 Data not collected'}</h3>
+  <ul>
+    <li>
+      {
+        de
+          ? 'Standortdaten · Adressbuch · Mikrofon · Werbe-IDs (IDFA) · Crash- oder Nutzungstelemetrie'
+          : 'Location data · address book · microphone · advertising identifiers (IDFA) · crash or usage telemetry'
+      }
+    </li>
+  </ul>
+
+  <h2>{de ? '4. Rechtsgrundlagen' : '4. Legal bases'}</h2>
+  <ul>
+    <li>{de ? 'Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung)' : 'Art. 6(1)(b) GDPR (performance of a contract)'}</li>
+    <li>{de ? 'Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse)' : 'Art. 6(1)(f) GDPR (legitimate interest)'}</li>
+    <li>{de ? 'Art. 6 Abs. 1 lit. a DSGVO (Einwilligung, z. B. für Datei-Zugriffe)' : 'Art. 6(1)(a) GDPR (consent, e.g. for file access)'}</li>
+  </ul>
+
+  <h2>{de ? '5. Speicherdauer' : '5. Retention'}</h2>
+  <p>
+    {
+      de
+        ? 'Verlauf und Einstellungen verbleiben auf deinem Gerät, bis du sie in der App löschst oder die App deinstallierst. Die Inhalte deiner Dateien werden nach der Verarbeitung nicht aufbewahrt.'
+        : 'History and settings stay on your device until you delete them in the app or uninstall it. The contents of your files are not retained after processing.'
+    }
+  </p>
+
+  <h2>{de ? '6. Weitergabe an Dritte' : '6. Disclosure to third parties'}</h2>
+  <p>
+    {
+      de
+        ? 'Es findet keine Weitergabe statt und keine Übermittlung in Drittländer. Die Abwicklung des Kaufs über den App Store erfolgt eigenverantwortlich durch Apple als selbständig Verantwortlicher und unterliegt Apples Datenschutzerklärung.'
+        : 'There is no disclosure and no transfer to third countries. Purchases via the App Store are handled by Apple on its own responsibility as a separate controller, subject to Apple’s privacy policy.'
+    }
+  </p>
+
+  <h2>{de ? '7. Deine Rechte' : '7. Your rights'}</h2>
+  <p>
+    {
+      de
+        ? 'Dir stehen die Rechte aus Art. 15–22 DSGVO zu (Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit, Widerspruch). Da alle Daten lokal liegen, kannst du diese Rechte unmittelbar in der App ausüben. Es besteht ein Beschwerderecht bei der zuständigen Landesdatenschutzbehörde (Art. 77 DSGVO).'
+        : 'You have the rights under Art. 15–22 GDPR (access, rectification, erasure, restriction, portability, objection). Since all data stays local, you can exercise these rights directly in the app. You may also lodge a complaint with the competent supervisory authority (Art. 77 GDPR).'
+    }
+  </p>
+
+  <h2>{de ? '8. Sicherheit' : '8. Security'}</h2>
+  <p>
+    {
+      de
+        ? 'Spurlos nutzt die Geräteverschlüsselung von iOS (Data Protection). Wir empfehlen, dein Gerät mit Code, Face ID oder Touch ID zu sichern.'
+        : 'Spurlos relies on iOS device encryption (Data Protection). We recommend securing your device with a passcode, Face ID or Touch ID.'
+    }
+  </p>
+
+  <h2>{de ? '9. Kontakt & Änderungen' : '9. Contact & changes'}</h2>
+  <p>
+    {de ? 'Fragen: ' : 'Questions: '}
+    <a href={`mailto:${contact.email}`}>{contact.email}</a>.
+    {
+      de
+        ? ' Die jeweils aktuelle Fassung findest du stets auf dieser Seite.'
+        : ' The current version is always available on this page.'
+    }
+  </p>
+</AppInfoLayout>

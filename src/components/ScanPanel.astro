@@ -1,0 +1,209 @@
+---
+import type { Lang } from '../i18n/ui';
+
+// Hero-Visual: die Analyse-Ansicht der App als ruhige Nachbildung. Bewusst
+// erfundene Beispielwerte – die Seite zeigt, welche Felder es gibt, nicht Daten
+// einer echten Datei.
+interface Props {
+  lang?: Lang;
+}
+const { lang = 'de' } = Astro.props;
+
+const copy = {
+  de: {
+    file: 'IMG_4821.HEIC',
+    size: '3,1 MB · HEIC',
+    findings: '6 Funde',
+    rows: [
+      { label: 'GPS-Position', value: '53.0361, 8.4991', alert: true },
+      { label: 'Aufnahmezeit', value: '14.03.2026, 18:42' },
+      { label: 'Kamera', value: 'iPhone 15 Pro' },
+      { label: 'Objektiv', value: 'Haupt­kamera · 24 mm f/1.78' },
+      { label: 'Seriennummer', value: 'F2LX9K3QW1', alert: true },
+      { label: 'Software', value: 'Lightroom 7.2' },
+    ],
+    alertNote: 'Diese Datei verrät deinen Standort',
+    result: 'Nach dem Bereinigen: 0 Felder gefunden',
+    resultNote: 'Bild Byte für Byte identisch',
+  },
+  en: {
+    file: 'IMG_4821.HEIC',
+    size: '3.1 MB · HEIC',
+    findings: '6 findings',
+    rows: [
+      { label: 'GPS position', value: '53.0361, 8.4991', alert: true },
+      { label: 'Capture time', value: '14 Mar 2026, 18:42' },
+      { label: 'Camera', value: 'iPhone 15 Pro' },
+      { label: 'Lens', value: 'Main camera · 24 mm f/1.78' },
+      { label: 'Serial number', value: 'F2LX9K3QW1', alert: true },
+      { label: 'Software', value: 'Lightroom 7.2' },
+    ],
+    alertNote: 'This file reveals your location',
+    result: 'After cleaning: 0 fields found',
+    resultNote: 'Image identical, byte for byte',
+  },
+}[lang];
+---
+
+<div class="panel" aria-hidden="true">
+  <div class="panel-head">
+    <span class="dot"></span>
+    <div>
+      <strong>{copy.file}</strong>
+      <span class="meta">{copy.size}</span>
+    </div>
+    <span class="count">{copy.findings}</span>
+  </div>
+
+  <div class="rows">
+    <span class="beam"></span>
+    {
+      copy.rows.map((row) => (
+        <div class={`row${row.alert ? ' row-alert' : ''}`}>
+          <span class="label">{row.label}</span>
+          <span class="value">{row.value}</span>
+        </div>
+      ))
+    }
+  </div>
+
+  <p class="alert-note">{copy.alertNote}</p>
+
+  <div class="result">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="9" cy="9" r="8" stroke="var(--mint)" stroke-width="1.6"></circle>
+      <path
+        d="m5.5 9.2 2.4 2.4 4.6-5"
+        stroke="var(--mint)"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+    <div>
+      <strong>{copy.result}</strong>
+      <span class="meta">{copy.resultNote}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 30px 70px -40px rgba(0, 0, 0, 0.9);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-head strong {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .dot {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(140deg, var(--mint-deep), var(--surface-2));
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .meta {
+    display: block;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+  }
+  .count {
+    margin-left: auto;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--alert);
+    border: 1px solid rgba(240, 112, 94, 0.4);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+
+  .rows {
+    position: relative;
+    overflow: hidden;
+    padding-block: 6px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 9px 2px;
+    border-bottom: 1px solid rgba(33, 55, 47, 0.55);
+    font-size: 0.86rem;
+  }
+  .row:last-child {
+    border-bottom: 0;
+  }
+  .label {
+    color: var(--text-muted);
+  }
+  .value {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text);
+    text-align: right;
+  }
+  .row-alert .value {
+    color: var(--alert);
+  }
+
+  /* Scanner-Balken wie im App-Icon – laeuft langsam durch die Feldliste. */
+  .beam {
+    position: absolute;
+    inset-inline: -20px;
+    height: 42px;
+    top: -42px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(52, 196, 137, 0.16),
+      transparent
+    );
+    animation: sweep 5.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sweep {
+    0% { top: -42px; }
+    55%, 100% { top: 100%; }
+  }
+
+  .alert-note {
+    margin: 12px 0 0;
+    color: var(--alert);
+    font-size: 0.82rem;
+  }
+
+  .result {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: rgba(52, 196, 137, 0.08);
+    border: 1px solid rgba(52, 196, 137, 0.25);
+    border-radius: var(--radius-sm);
+  }
+  .result strong {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .beam {
+      display: none;
+    }
+  }
+</style>

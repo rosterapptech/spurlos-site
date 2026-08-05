@@ -1,0 +1,547 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import BlogTeaser from './BlogTeaser.astro';
+import ScanPanel from './ScanPanel.astro';
+import type { Lang } from '../i18n/ui';
+import { homeCopy } from '../config/home';
+import { featureData, featureIcons, featureSlugs } from '../config/features';
+import { deepCategories } from '../config/formats';
+import { formatsPath } from '../i18n/formatsPath';
+import { app } from '../config/site';
+
+// Eine Startseite fuer alle Sprachen: Struktur hier, Text in config/home.ts.
+// So kann eine inhaltliche Aenderung nicht in einer Sprache haengenbleiben.
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const c = homeCopy[lang];
+const features = featureData[lang];
+const base = lang === 'de' ? '' : `/${lang}`;
+const site = Astro.site ?? new URL('https://spurlosapp.com');
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'SoftwareApplication',
+      name: 'Spurlos',
+      alternateName: app.fullName,
+      applicationCategory: 'UtilitiesApplication',
+      operatingSystem: 'iOS',
+      description: c.meta.description,
+      inLanguage: ['de', 'en'],
+      url: new URL(base === '' ? '/' : `${base}/`, site).href,
+      ...(app.appStoreUrl && {
+        sameAs: [app.appStoreUrl],
+        downloadUrl: app.appStoreUrl,
+        installUrl: app.appStoreUrl,
+      }),
+      offers: [
+        {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: app.currency,
+          name: c.pricing.freeName,
+        },
+        {
+          '@type': 'Offer',
+          price: app.proPriceValue,
+          priceCurrency: app.currency,
+          name: c.pricing.proName,
+        },
+      ],
+      author: { '@type': 'Organization', name: 'Slowcraft' },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: c.faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  lang={lang}
+  path="/"
+  title={c.meta.title}
+  description={c.meta.description}
+  schema={schema}
+>
+  <Header lang={lang} />
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">{c.hero.eyebrow}</p>
+          <h1>{c.hero.headline}<br /><span class="accent">{c.hero.headlineAccent}</span></h1>
+          <p class="lede">{c.hero.lede}</p>
+          <div class="hero-cta">
+            {
+              app.appStoreUrl ? (
+                <a href={app.appStoreUrl} class="btn btn-primary" rel="noopener">
+                  {c.hero.ctaSoon}
+                </a>
+              ) : (
+                <span class="btn btn-soon">{c.hero.ctaSoon}</span>
+              )
+            }
+            <a href={`${base}/#features`} class="btn btn-ghost">{c.hero.ctaSecondary}</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <ScanPanel lang={lang} />
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST -->
+    <div class="trust">
+      <div class="container trust-row">
+        {c.trust.map((item) => <span>{item}</span>)}
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="container">
+        <p class="eyebrow">{c.features.eyebrow}</p>
+        <h2>{c.features.headline}</h2>
+        <p class="lede" style="margin-bottom:48px">{c.features.lede}</p>
+        <div class="grid">
+          {
+            featureSlugs.map((slug) => (
+              <a href={`${base}/features/${slug}/`} class="card feature">
+                <span class="feat-icon" set:html={featureIcons[slug]} />
+                <h3>
+                  {features[slug].name}
+                  {features[slug].pro && <span class="pro-tag">Pro</span>}
+                </h3>
+                <p>{features[slug].shortDesc}</p>
+                <span class="feature-arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- SO FUNKTIONIERT ES -->
+    <section class="how">
+      <div class="container">
+        <p class="eyebrow">{c.how.eyebrow}</p>
+        <h2>{c.how.headline}</h2>
+        <div class="grid steps">
+          {
+            c.how.steps.map((step, i) => (
+              <div class="card step">
+                <span class="step-no">{i + 1}</span>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMATE -->
+    <section class="formats">
+      <div class="container">
+        <p class="eyebrow">{c.formats.eyebrow}</p>
+        <h2>{c.formats.headline}</h2>
+        <p class="lede" style="margin-bottom:40px">{c.formats.lede}</p>
+        <div class="format-grid">
+          {
+            deepCategories.map((cat) => (
+              <div class="card format-card">
+                <h3>
+                  {cat.label[lang]}
+                  {cat.tier === 'pro' && <span class="pro-tag">Pro</span>}
+                </h3>
+                <p class="exts">{cat.extensions.slice(0, 6).join(' · ')}</p>
+              </div>
+            ))
+          }
+        </div>
+        <a href={formatsPath(lang)} class="all-link">{c.formats.link}</a>
+      </div>
+    </section>
+
+    <!-- PREIS -->
+    <section id="pricing" class="pricing">
+      <div class="container">
+        <p class="eyebrow">{c.pricing.eyebrow}</p>
+        <h2>{c.pricing.headline}</h2>
+        <p class="lede" style="margin-bottom:48px">{c.pricing.lede}</p>
+        <div class="price-grid">
+          <div class="card price">
+            <span class="price-name">{c.pricing.freeName}</span>
+            <span class="price-amount">{c.pricing.freePrice}</span>
+            <p class="price-note">{c.pricing.freeNote}</p>
+            <ul>
+              {c.pricing.freeBullets.map((b) => <li>{b}</li>)}
+            </ul>
+          </div>
+          <div class="card price featured">
+            <span class="badge">{c.pricing.badge}</span>
+            <span class="price-name">{c.pricing.proName}</span>
+            <span class="price-amount">{c.pricing.proPrice}</span>
+            <p class="price-note">{c.pricing.proNote}</p>
+            <ul>
+              {c.pricing.proBullets.map((b) => <li>{b}</li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="container faq-wrap">
+        <div>
+          <p class="eyebrow">{c.faqEyebrow}</p>
+          <h2>{c.faqHeadline}</h2>
+        </div>
+        <div class="faq-list">
+          {
+            c.faqs.map((f) => (
+              <details class="card faq-item">
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <BlogTeaser lang={lang} />
+
+    <section class="closing">
+      <div class="container closing-inner">
+        <h2>{c.closing.headline}</h2>
+        {
+          app.appStoreUrl ? (
+            <a href={app.appStoreUrl} class="btn btn-primary" rel="noopener">
+              {c.hero.ctaSoon}
+            </a>
+          ) : (
+            <p class="closing-note">{c.closing.note}</p>
+          )
+        }
+      </div>
+    </section>
+  </main>
+
+  <Footer lang={lang} />
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: clamp(48px, 7vw, 88px);
+    padding-bottom: clamp(48px, 7vw, 88px);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: 52px;
+  }
+  .accent {
+    color: var(--mint);
+  }
+  .hero-cta {
+    display: flex;
+    gap: 14px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .trust {
+    border-block: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .trust-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 40px;
+    justify-content: center;
+    padding-block: 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .trust-row span {
+    position: relative;
+    padding-left: 20px;
+  }
+  .trust-row span::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--mint);
+    transform: translateY(-50%);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .feature {
+    color: var(--text);
+    transition: border-color 0.2s ease, transform 0.15s ease;
+    position: relative;
+    padding-bottom: 40px;
+  }
+  .feature:hover {
+    text-decoration: none;
+    border-color: var(--mint);
+    transform: translateY(-3px);
+  }
+  .feature .feat-icon {
+    display: block;
+    width: 34px;
+    height: 34px;
+  }
+  .feature h3 {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .feature p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.96rem;
+  }
+  .feature-arrow {
+    position: absolute;
+    bottom: 16px;
+    right: 18px;
+    color: var(--text-muted);
+    opacity: 0.5;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+  }
+  .feature:hover .feature-arrow {
+    opacity: 1;
+    color: var(--mint);
+    transform: translateX(3px);
+  }
+
+  .how {
+    background: var(--surface);
+    border-block: 1px solid var(--border);
+  }
+  .steps {
+    margin-top: 44px;
+  }
+  .step {
+    background: var(--bg);
+  }
+  .step-no {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--mint-deep);
+    color: var(--mint);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .step h3 {
+    margin: 16px 0 8px;
+  }
+  .step p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.96rem;
+  }
+
+  .format-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .format-card {
+    padding: 18px 20px;
+  }
+  .format-card h3 {
+    font-size: 1rem;
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .exts {
+    margin: 0;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    line-height: 1.5;
+  }
+  .all-link {
+    display: inline-block;
+    margin-top: 28px;
+    color: var(--mint-pale);
+  }
+
+  .price-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 780px;
+  }
+  .price {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .price-name {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .price-amount {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    margin: 10px 0;
+  }
+  .price-note {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    margin: 0 0 16px;
+  }
+  .price ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-muted);
+    font-size: 0.93rem;
+    line-height: 1.7;
+  }
+  .price.featured {
+    border-color: var(--mint-deep);
+    box-shadow: 0 0 0 1px var(--mint-deep), 0 20px 50px -24px rgba(52, 196, 137, 0.45);
+  }
+  .badge {
+    position: absolute;
+    top: -11px;
+    right: 22px;
+    background: linear-gradient(135deg, var(--mint), var(--mint-deep));
+    color: #04140f;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+
+  .faq-wrap {
+    display: grid;
+    grid-template-columns: 0.6fr 1.4fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .faq-item {
+    padding: 0;
+  }
+  .faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 20px 24px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item summary::after {
+    content: '+';
+    color: var(--mint);
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+  .faq-item[open] summary::after {
+    content: '–';
+  }
+  .faq-item p {
+    padding: 0 24px 22px;
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  .closing-inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+  .closing h2 {
+    max-width: 18ch;
+  }
+  .closing-note {
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .format-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .faq-wrap {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 720px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .price-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

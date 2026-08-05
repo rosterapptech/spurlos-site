@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+export const prerender = true;
+
+const lang = 'de';
+---
+
+<BaseLayout
+  lang={lang}
+  path="/404"
+  title="Seite nicht gefunden – Spurlos"
+  description="Diese Seite existiert nicht (mehr). Zurück zur Startseite oder zum Blog."
+  noindex={true}
+>
+  <Header lang={lang} />
+  <main class="container notfound">
+    <p class="eyebrow">404</p>
+    <h1>Diese Seite gibt es nicht.</h1>
+    <p class="lede">
+      Vielleicht wurde sie verschoben – oder der Link war nie ganz richtig. Hier geht es weiter:
+    </p>
+    <div class="notfound-links">
+      <a href="/" class="btn btn-primary">Zur Startseite</a>
+      <a href="/blog/" class="btn btn-ghost">Zum Blog</a>
+    </div>
+    <p class="notfound-langs">
+      <a href="/en/">English</a>
+    </p>
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: 100px 120px;
+    max-width: 640px;
+    text-align: center;
+  }
+  .notfound h1 {
+    margin-top: 0.3em;
+  }
+  .notfound .lede {
+    margin-inline: auto;
+  }
+  .notfound-links {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+  .notfound-langs {
+    margin-top: 40px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+</style>

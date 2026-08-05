@@ -1,0 +1,196 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import type { Lang } from '../i18n/ui';
+import { contact, websiteFeatures, legalUpdated } from '../config/site';
+
+// Datenschutzerklaerung der WEBSITE (nicht der App – die liegt unter
+// /appinfo/datenschutzrichtlinie/). Welche Abschnitte erscheinen, steuert
+// websiteFeatures in config/site.ts: bei einem Anbieterwechsel aendert man dort
+// einen Wert, statt Text in mehreren Sprachdateien zu suchen.
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const de = lang === 'de';
+const stand = de ? legalUpdated.de : legalUpdated.en;
+
+const meta = {
+  de: {
+    title: 'Datenschutzerklärung – Spurlos',
+    description: 'Datenschutzerklärung der Spurlos-Website. Cookielos, kein Konto, kein Backend.',
+  },
+  en: {
+    title: 'Privacy policy – Spurlos',
+    description: 'Privacy policy of the Spurlos website. Cookie-free, no account, no backend.',
+  },
+}[lang];
+
+const appPrivacyHref = de ? '/appinfo/datenschutzrichtlinie/' : '/en/appinfo/datenschutzrichtlinie/';
+---
+
+<BaseLayout
+  lang={lang}
+  path="/datenschutz"
+  title={meta.title}
+  description={meta.description}
+  noindex={true}
+>
+  <Header lang={lang} />
+  <main class="prose container">
+    <h1>{de ? 'Datenschutzerklärung' : 'Privacy policy'}</h1>
+    <p class="updated">{de ? `Stand: ${stand}` : `Last updated: ${stand}`}</p>
+
+    <h2>{de ? '1. Verantwortlicher' : '1. Controller'}</h2>
+    <p>
+      <strong>{contact.name}</strong><br />
+      {contact.company} · {contact.street} · {contact.city}<br />
+      {de ? 'E-Mail' : 'Email'}: <a href={`mailto:${contact.email}`}>{contact.email}</a>
+    </p>
+
+    <h2>{de ? '2. Diese Website' : '2. This website'}</h2>
+    <p>
+      {
+        de
+          ? 'Diese Website ist die Marketing-Präsenz der iOS-App Spurlos. Es werden keine Nutzerkonten angelegt, keine Formulare verarbeitet und keine Cookies gesetzt. Für eine anonymisierte Reichweitenmessung kommt ein datenschutzfreundliches Analyse-Tool zum Einsatz (siehe Abschnitt „Analyse").'
+          : 'This website is the marketing presence of the Spurlos iOS app. No user accounts are created, no forms are processed and no cookies are set. A privacy-friendly analytics tool is used for anonymised audience measurement (see the "Analytics" section).'
+      }
+    </p>
+
+    <h2>{de ? '3. Hosting & Server-Logs' : '3. Hosting & server logs'}</h2>
+    <p>
+      {
+        websiteFeatures.hosting
+          ? de
+            ? `Diese Website wird bei ${websiteFeatures.hosting} gehostet. Beim Aufruf der Seite verarbeitet der Hoster technisch notwendige Server-Logs (z. B. IP-Adresse, Zeitstempel, abgerufene Seite) zur Auslieferung und Sicherheit. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse). Ergänzend gilt die Datenschutzerklärung des Hosters.`
+            : `This website is hosted by ${websiteFeatures.hosting}. When you open a page, the host processes technically necessary server logs (e.g. IP address, timestamp, page requested) for delivery and security. The legal basis is Art. 6(1)(f) GDPR (legitimate interest). The host's own privacy policy applies in addition.`
+          : de
+            ? 'Beim Aufruf der Seite verarbeitet der Hosting-Anbieter technisch notwendige Server-Logs (z. B. IP-Adresse, Zeitstempel, abgerufene Seite) zur Auslieferung und Sicherheit. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO.'
+            : 'When you open a page, the hosting provider processes technically necessary server logs (e.g. IP address, timestamp, page requested) for delivery and security. The legal basis is Art. 6(1)(f) GDPR.'
+      }
+    </p>
+
+    <h2>{de ? '4. Schriftarten' : '4. Fonts'}</h2>
+    <p>
+      {
+        websiteFeatures.externalFonts
+          ? de
+            ? 'Diese Website lädt Schriftarten von einem externen CDN. Dabei wird deine IP-Adresse an den Anbieter übertragen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO.'
+            : 'This website loads fonts from an external CDN, which transmits your IP address to that provider. The legal basis is Art. 6(1)(f) GDPR.'
+          : de
+            ? 'Alle Schriftarten sind lokal eingebunden. Es werden keine externen Font-CDNs aufgerufen.'
+            : 'All fonts are self-hosted. No external font CDNs are called.'
+      }
+    </p>
+
+    {
+      websiteFeatures.analytics && (
+        <>
+          <h2>{de ? '5. Analyse' : '5. Analytics'}</h2>
+          <p>
+            {de
+              ? `Diese Website nutzt ${websiteFeatures.analytics} für anonymisierte Reichweitenmessung. Es werden keine personenbezogenen Daten gespeichert und keine Cookies gesetzt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO.`
+              : `This website uses ${websiteFeatures.analytics} for anonymised audience measurement. No personal data is stored and no cookies are set. The legal basis is Art. 6(1)(f) GDPR.`}
+          </p>
+        </>
+      )
+    }
+
+    {
+      websiteFeatures.thirdCountryTransfer && (
+        <>
+          <h2>{de ? 'Übermittlung in Drittländer (USA)' : 'International transfers (USA)'}</h2>
+          <p>
+            {de
+              ? `Hosting und Reichweitenmessung erfolgen über ${websiteFeatures.hosting ?? 'Vercel'} (Vercel Inc., USA). Dabei können personenbezogene Daten – insbesondere deine IP-Adresse – in die USA übermittelt werden. Vercel Inc. ist unter dem EU-US Data Privacy Framework zertifiziert; ergänzend bestehen EU-Standardvertragsklauseln (Art. 46 DSGVO) als geeignete Garantie. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f i. V. m. Art. 44 ff. DSGVO.`
+              : `Hosting and audience measurement run via ${websiteFeatures.hosting ?? 'Vercel'} (Vercel Inc., USA). Personal data — in particular your IP address — may therefore be transferred to the USA. Vercel Inc. is certified under the EU-US Data Privacy Framework; EU standard contractual clauses (Art. 46 GDPR) exist in addition as an appropriate safeguard. The legal basis is Art. 6(1)(f) in conjunction with Art. 44 et seq. GDPR.`}
+          </p>
+        </>
+      )
+    }
+
+    {
+      websiteFeatures.cookies && (
+        <>
+          <h2>Cookies</h2>
+          <p>
+            {de
+              ? 'Diese Website setzt Cookies. Beim ersten Besuch wird dein Einverständnis eingeholt. Technisch notwendige Cookies sind von der Einwilligung ausgenommen.'
+              : 'This website sets cookies. Your consent is obtained on your first visit. Strictly necessary cookies are exempt from consent.'}
+          </p>
+        </>
+      )
+    }
+
+    {
+      websiteFeatures.contactForm && (
+        <>
+          <h2>{de ? 'Kontaktformular' : 'Contact form'}</h2>
+          <p>
+            {de
+              ? 'Wenn du das Kontaktformular nutzt, werden die eingegebenen Daten zur Bearbeitung deiner Anfrage verarbeitet und nach Erledigung gelöscht. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO.'
+              : 'If you use the contact form, the data you enter is processed to handle your request and deleted once it is resolved. The legal basis is Art. 6(1)(b) GDPR.'}
+          </p>
+        </>
+      )
+    }
+
+    {
+      websiteFeatures.newsletter && (
+        <>
+          <h2>Newsletter</h2>
+          <p>
+            {de
+              ? 'Wenn du dich für den Newsletter anmeldest, verwenden wir deine E-Mail-Adresse ausschließlich für den Versand. Rechtsgrundlage ist Art. 6 Abs. 1 lit. a DSGVO. Du kannst dich jederzeit abmelden.'
+              : 'If you subscribe to the newsletter, we use your email address solely to send it. The legal basis is Art. 6(1)(a) GDPR. You can unsubscribe at any time.'}
+          </p>
+        </>
+      )
+    }
+
+    <h2>{de ? 'Die App Spurlos' : 'The Spurlos app'}</h2>
+    <p>
+      {
+        de
+          ? 'Die App selbst enthält keinerlei Netzwerkcode: Deine Dateien und die daraus ausgelesenen Metadaten verlassen dein Gerät nicht, es gibt kein Spurlos-Backend. Die vollständige Datenschutzerklärung der App findest du unter '
+          : 'The app itself contains no networking code: your files and the metadata read from them never leave your device, and there is no Spurlos backend. The full privacy policy of the app is available at '
+      }
+      <a href={appPrivacyHref}>{de ? 'Datenschutzerklärung der App' : 'the app privacy policy'}</a>.
+    </p>
+
+    <h2>{de ? 'Deine Rechte' : 'Your rights'}</h2>
+    <p>
+      {
+        de
+          ? 'Dir stehen die Rechte aus Art. 15–22 DSGVO zu: Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit und Widerspruch. Beschwerderecht bei der zuständigen Landesdatenschutzbehörde (Art. 77 DSGVO). Kontakt: '
+          : 'You have the rights under Art. 15–22 GDPR: access, rectification, erasure, restriction, data portability and objection. You also have the right to lodge a complaint with the competent supervisory authority (Art. 77 GDPR). Contact: '
+      }
+      <a href={`mailto:${contact.email}`}>{contact.email}</a>.
+    </p>
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>
+
+<style>
+  .prose {
+    max-width: 720px;
+    padding-block: 80px;
+  }
+  .prose h1 {
+    margin-bottom: 0.3em;
+  }
+  .updated {
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    margin-bottom: 2em;
+  }
+  .prose h2 {
+    font-size: 1.25rem;
+    margin-top: 2em;
+  }
+  .prose p {
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+</style>

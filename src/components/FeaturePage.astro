@@ -1,0 +1,215 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import type { Lang } from '../i18n/ui';
+import { featureData, featureIcons, featureSlugs, type FeatureSlug } from '../config/features';
+import { featureBreadcrumb } from '../i18n/breadcrumbs';
+import { formatsPath } from '../i18n/formatsPath';
+import { app } from '../config/site';
+
+interface Props {
+  lang: Lang;
+  slug: FeatureSlug;
+}
+const { lang, slug } = Astro.props;
+
+const f = featureData[lang][slug];
+const base = lang === 'de' ? '' : `/${lang}`;
+const site = Astro.site ?? new URL('https://spurlosapp.com');
+
+const copy = {
+  de: {
+    back: '← Alle Funktionen',
+    more: 'Weitere Funktionen',
+    proNote: 'Diese Funktion ist Teil von Spurlos Pro – ein Einmalkauf für 6,99 €, kein Abo.',
+    formatsLink: 'Welche Dateiformate unterstützt werden →',
+    soon: 'Spurlos erscheint bald im App Store.',
+  },
+  en: {
+    back: '← All features',
+    more: 'More features',
+    proNote: 'This feature is part of Spurlos Pro — a €6.99 one-time purchase, no subscription.',
+    formatsLink: 'Which file formats are supported →',
+    soon: 'Spurlos is coming to the App Store soon.',
+  },
+}[lang];
+
+const others = featureSlugs.filter((s) => s !== slug).slice(0, 3);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [featureBreadcrumb(lang, f.name, slug, site)],
+};
+---
+
+<BaseLayout
+  lang={lang}
+  path={`/features/${slug}`}
+  title={`${f.name} – Spurlos`}
+  description={f.shortDesc}
+  schema={schema}
+>
+  <Header lang={lang} />
+  <main class="container feature-detail">
+    <a href={`${base}/#features`} class="back">{copy.back}</a>
+
+    <div class="feature-header">
+      <span class="feat-icon" set:html={featureIcons[slug]} />
+      <h1>{f.name}</h1>
+      {f.pro && <span class="pro-tag">Pro</span>}
+    </div>
+
+    <p class="long-desc">{f.longDesc}</p>
+
+    <ul class="bullets">
+      {f.bullets.map((b) => <li>{b}</li>)}
+    </ul>
+
+    {f.pro && <p class="pro-note">{copy.proNote}</p>}
+
+    <p class="formats-link">
+      <a href={formatsPath(lang)}>{copy.formatsLink}</a>
+    </p>
+
+    <section class="others">
+      <h2>{copy.more}</h2>
+      <div class="grid">
+        {
+          others.map((s) => (
+            <a href={`${base}/features/${s}/`} class="card other">
+              <h3>{featureData[lang][s].name}</h3>
+              <p>{featureData[lang][s].shortDesc}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    {
+      app.appStoreUrl ? (
+        <a href={app.appStoreUrl} class="btn btn-primary cta" rel="noopener">
+          {lang === 'de' ? 'Im App Store laden' : 'Get it on the App Store'}
+        </a>
+      ) : (
+        <p class="soon">{copy.soon}</p>
+      )
+    }
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>
+
+<style>
+  .feature-detail {
+    max-width: 760px;
+    padding-block: 56px 96px;
+  }
+  .back {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .feature-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .feature-header h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4.4vw, 3rem);
+  }
+  .feat-icon {
+    display: block;
+    width: 34px;
+    height: 34px;
+  }
+  .long-desc {
+    margin-top: 24px;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+  }
+  .bullets {
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bullets li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 12px;
+    color: var(--text-muted);
+  }
+  .bullets li::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 0.72em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--mint);
+  }
+  .pro-note {
+    margin-top: 28px;
+    padding: 14px 18px;
+    background: rgba(52, 196, 137, 0.08);
+    border-left: 3px solid var(--mint);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .formats-link {
+    margin-top: 24px;
+  }
+  .others {
+    margin-top: 72px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .others h2 {
+    font-size: 1.35rem;
+    margin-bottom: 24px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .other {
+    color: var(--text);
+    transition: border-color 0.2s ease, transform 0.15s ease;
+  }
+  .other:hover {
+    text-decoration: none;
+    border-color: var(--mint);
+    transform: translateY(-3px);
+  }
+  .other h3 {
+    font-size: 1rem;
+    margin: 0 0 8px;
+  }
+  .other p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.87rem;
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cta {
+    margin-top: 48px;
+  }
+  .soon {
+    margin-top: 48px;
+    color: var(--text-muted);
+  }
+  @media (max-width: 720px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

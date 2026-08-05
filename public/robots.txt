@@ -1,0 +1,34 @@
+# Spurlos – robots.txt
+# Such- UND KI-Crawler ausdruecklich erlauben (wichtig fuer GEO).
+User-agent: *
+Allow: /
+
+# KI-/Answer-Engine-Crawler explizit willkommen heissen
+
+# OpenAI
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+
+# Anthropic
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+
+# Google (KI-Training separat, Standard-Suche laeuft ueber User-agent: *)
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://spurlosapp.com/sitemap-index.xml

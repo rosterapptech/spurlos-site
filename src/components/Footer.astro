@@ -1,0 +1,127 @@
+---
+import Mark from './Mark.astro';
+import { t, type Lang } from '../i18n/ui';
+import { formatsPath } from '../i18n/formatsPath';
+
+interface Props {
+  lang?: Lang;
+}
+const { lang = 'de' } = Astro.props;
+const tr = t(lang);
+const base = lang === 'de' ? '' : `/${lang}`;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="top">
+      <div class="brandcol">
+        <div class="brandrow">
+          <Mark size={24} />
+          <span class="wordmark">Spurlos</span>
+        </div>
+        <p class="tagline">{tr('footer.tagline')}</p>
+        <p class="privacy">{tr('footer.privacy')}</p>
+      </div>
+
+      <nav class="links" aria-label={tr('footer.legal')}>
+        <span class="lbl">{tr('footer.legal')}</span>
+        <a href={`${base}/impressum/`}>{tr('footer.impressum')}</a>
+        <a href={`${base}/datenschutz/`}>{tr('footer.datenschutz')}</a>
+      </nav>
+
+      <nav class="links" aria-label={tr('footer.app')}>
+        <span class="lbl">{tr('footer.app')}</span>
+        <a href={`${base}/appinfo/support/`}>{tr('footer.app.support')}</a>
+        <a href={`${base}/appinfo/impressum/`}>{tr('footer.impressum')}</a>
+        <a href={`${base}/appinfo/agb/`}>{tr('footer.app.agb')}</a>
+        <a href={`${base}/appinfo/datenschutzrichtlinie/`}>{tr('footer.app.privacy')}</a>
+        <a href={formatsPath(lang)}>{tr('footer.formats')}</a>
+      </nav>
+
+      <nav class="links" aria-label="Sprache / Language">
+        <span class="lbl">{tr('footer.language')}</span>
+        <a href="/">Deutsch</a>
+        <a href="/en/">English</a>
+      </nav>
+    </div>
+
+    <div class="bottom">
+      <span>© {year} Slowcraft</span>
+      <span>{tr('footer.madeby')}</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding-block: 56px 40px;
+    background: var(--surface);
+  }
+  .top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+  .brandrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .tagline {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--text);
+    margin: 14px 0 6px;
+  }
+  .privacy {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    max-width: 36ch;
+  }
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lbl {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .links a {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .links a:hover {
+    color: var(--text);
+  }
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 44px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+  @media (max-width: 760px) {
+    .top {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    .bottom {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+</style>

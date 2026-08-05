@@ -1,0 +1,211 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import RelatedPosts from './RelatedPosts.astro';
+import { t, type Lang } from '../i18n/ui';
+import { blogAlternates } from '../i18n/blogAlternates';
+import { blogBreadcrumb } from '../i18n/breadcrumbs';
+
+interface Props {
+  lang: Lang;
+  post: CollectionEntry<'blog'>;
+}
+const { lang, post } = Astro.props;
+
+const tr = t(lang);
+const prefix = lang === 'de' ? '' : `/${lang}`;
+const site = Astro.site ?? new URL('https://spurlosapp.com');
+
+const posts = await getCollection('blog');
+const { Content } = await render(post);
+
+// Blog-Slugs sind pro Sprache uebersetzt – ohne diese expliziten Alternates
+// wuerde der Default in BaseLayout auf nicht existierende URLs zeigen.
+const alternates = blogAlternates(posts, post, site);
+
+const LOCALE: Record<Lang, string> = { de: 'de-DE', en: 'en-GB' };
+const fmt = (d: Date) =>
+  d.toLocaleDateString(LOCALE[lang], { year: 'numeric', month: 'long', day: 'numeric' });
+
+const articleSchema = {
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  ...(post.data.updatedDate && { dateModified: post.data.updatedDate.toISOString() }),
+  author: { '@type': 'Organization', name: post.data.author },
+  inLanguage: lang,
+};
+
+const faqSchema = post.data.faq?.length
+  ? {
+      '@type': 'FAQPage',
+      mainEntity: post.data.faq.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    }
+  : null;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    articleSchema,
+    blogBreadcrumb(lang, post.data.title, post.id, site),
+    ...(faqSchema ? [faqSchema] : []),
+  ],
+};
+---
+
+<BaseLayout
+  lang={lang}
+  path={`/blog/${post.id}`}
+  title={`${post.data.title} – Spurlos`}
+  description={post.data.description}
+  schema={schema}
+  alternates={alternates}
+  ogType="article"
+  publishedTime={post.data.pubDate.toISOString()}
+  modifiedTime={post.data.updatedDate?.toISOString()}
+>
+  <Header lang={lang} />
+  <main class="container article">
+    <a href={`${prefix}/blog/`} class="back">{tr('blog.back')}</a>
+    <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+    <h1>{post.data.title}</h1>
+    <div class="body">
+      <Content />
+    </div>
+
+    {
+      post.data.faq?.length && (
+        <section class="faq">
+          <h2>{lang === 'de' ? 'Häufige Fragen' : 'Frequently asked questions'}</h2>
+          {post.data.faq.map((f) => (
+            <details class="card faq-item">
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </section>
+      )
+    }
+
+    <RelatedPosts lang={lang} currentId={post.id} tags={post.data.tags} />
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>
+
+<style>
+  .article {
+    max-width: 720px;
+    padding-block: 60px 80px;
+  }
+  .back {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .article time {
+    display: block;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-top: 24px;
+  }
+  .article h1 {
+    margin: 8px 0 32px;
+    font-size: clamp(2.1rem, 4.6vw, 3.1rem);
+  }
+  .body :global(h2) {
+    font-size: 1.5rem;
+    margin-top: 1.8em;
+  }
+  .body :global(h3) {
+    margin-top: 1.6em;
+  }
+  .body :global(p),
+  .body :global(li) {
+    color: var(--text-muted);
+    line-height: 1.75;
+  }
+  .body :global(ul),
+  .body :global(ol) {
+    padding-left: 22px;
+  }
+  .body :global(blockquote) {
+    border-left: 3px solid var(--mint);
+    margin: 1.5em 0;
+    padding: 4px 0 4px 20px;
+    color: var(--mint-pale);
+    font-style: italic;
+  }
+  .body :global(strong) {
+    color: var(--text);
+  }
+  .body :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--surface-2);
+    border-radius: 5px;
+    padding: 1px 6px;
+  }
+  .body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    font-size: 0.92rem;
+  }
+  .body :global(th),
+  .body :global(td) {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .body :global(th) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .faq {
+    margin-top: 56px;
+  }
+  .faq h2 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+  .faq-item {
+    padding: 0;
+    margin-bottom: 12px;
+  }
+  .faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 22px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item summary::after {
+    content: '+';
+    color: var(--mint);
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+  .faq-item[open] summary::after {
+    content: '–';
+  }
+  .faq-item p {
+    padding: 0 22px 20px;
+    margin: 0;
+    color: var(--text-muted);
+  }
+</style>

@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import type { Lang } from '../i18n/ui';
+import { deepCategories, surfaceGroups } from '../config/formats';
+import { formatsPath, FORMATS_SLUG } from '../i18n/formatsPath';
+import { slugAlternates } from '../i18n/slugAlternates';
+import { formatsBreadcrumb } from '../i18n/breadcrumbs';
+import { contact } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const site = Astro.site ?? new URL('https://spurlosapp.com');
+
+// Diese Seite hat pro Sprache einen eigenen Slug – der Default in BaseLayout
+// wuerde /en/unterstuetzte-formate/ erzeugen (404). Deshalb explizit.
+const alternates = slugAlternates(formatsPath, site);
+
+const copy = {
+  de: {
+    title: 'Unterstützte Formate – Spurlos',
+    description:
+      'Alle Dateiformate, die Spurlos annimmt: Bilder, Video, Audio, PDF, Office, OpenDocument und iWork mit vollständiger Metadaten-Bereinigung – dazu RAW, Archive, Geodaten und mehr auf Dateisystem-Ebene.',
+    eyebrow: 'Formate',
+    h1: 'Unterstützte Formate',
+    lede:
+      'Die Analyse ist für jedes hier gelistete Format kostenlos. Bei den Formaten mit Tiefenreinigung entfernt Spurlos die Metadaten im Inneren der Datei; bei allen übrigen die Spuren, die das Dateisystem anhängt.',
+    deepH2: 'Tiefenreinigung',
+    deepLede:
+      'Diese Formate werden vollständig geöffnet: Spurlos liest jedes Metadaten-Feld, zeigt es an und schreibt die Datei ohne diese Felder neu – ohne Bild- oder Videodaten neu zu kodieren.',
+    carriesLabel: 'Typischer Inhalt',
+    proLabel: 'Bereinigung mit Spurlos Pro',
+    freeLabel: 'Bereinigung kostenlos',
+    surfaceH2: 'Dateisystem-Spuren',
+    surfaceLede:
+      'Diese Formate nimmt Spurlos ebenfalls an. Der Inhalt wird Byte für Byte kopiert und nicht verändert; entfernt werden die Spuren, die das Betriebssystem außen an die Datei hängt: die Herkunfts-URL eines Downloads, Finder-Tags und -Kommentare, das Quarantäne-Attribut und weitere erweiterte Attribute. Metadaten im Inneren dieser Formate werden weder angezeigt noch entfernt – die App sagt das bei jeder solchen Datei ausdrücklich.',
+    missingH2: 'Format fehlt?',
+    missingText:
+      'Wenn du ein Format vermisst, schreib uns – die Liste wächst mit den Anfragen.',
+  },
+  en: {
+    title: 'Supported formats – Spurlos',
+    description:
+      'Every file format Spurlos accepts: images, video, audio, PDF, Office, OpenDocument and iWork with full metadata cleaning — plus RAW, archives, geodata and more at file system level.',
+    eyebrow: 'Formats',
+    h1: 'Supported formats',
+    lede:
+      'Analysis is free for every format listed here. For the deep-clean formats Spurlos removes the metadata inside the file; for all others it removes the traces the file system attaches.',
+    deepH2: 'Deep clean',
+    deepLede:
+      'These formats are opened all the way: Spurlos reads every metadata field, shows it to you and rewrites the file without those fields — without re-encoding image or video data.',
+    carriesLabel: 'Typically contains',
+    proLabel: 'Cleaning with Spurlos Pro',
+    freeLabel: 'Cleaning free',
+    surfaceH2: 'File system traces',
+    surfaceLede:
+      'Spurlos accepts these formats too. The content is copied byte for byte and never modified; what gets removed are the traces the operating system attaches on the outside: the origin URL of a download, Finder tags and comments, the quarantine attribute and other extended attributes. Metadata inside these formats is neither shown nor removed — the app says so explicitly for every such file.',
+    missingH2: 'Missing a format?',
+    missingText: 'If a format is missing, write to us — the list grows with the requests.',
+  },
+}[lang];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [formatsBreadcrumb(lang, copy.h1, site)],
+};
+---
+
+<BaseLayout
+  lang={lang}
+  path={`/${FORMATS_SLUG[lang]}`}
+  title={copy.title}
+  description={copy.description}
+  schema={schema}
+  alternates={alternates}
+>
+  <Header lang={lang} />
+  <main class="container formats-page">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h1>{copy.h1}</h1>
+    <p class="lede">{copy.lede}</p>
+
+    <h2>{copy.deepH2}</h2>
+    <p class="section-lede">{copy.deepLede}</p>
+
+    <div class="cat-list">
+      {
+        deepCategories.map((cat) => (
+          <article class="card cat">
+            <header>
+              <h3>{cat.label[lang]}</h3>
+              <span class={cat.tier === 'pro' ? 'tier pro' : 'tier'}>
+                {cat.tier === 'pro' ? copy.proLabel : copy.freeLabel}
+              </span>
+            </header>
+            <p class="exts">{cat.extensions.join(' · ')}</p>
+            <p class="carries">
+              <strong>{copy.carriesLabel}:</strong> {cat.carries[lang]}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+
+    <h2>{copy.surfaceH2}</h2>
+    <p class="section-lede">{copy.surfaceLede}</p>
+
+    <div class="surface-list">
+      {
+        surfaceGroups.map((group) => (
+          <div class="surface-group">
+            <h3>{group.label[lang]}</h3>
+            <p class="exts">{group.extensions.join(' · ')}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <h2>{copy.missingH2}</h2>
+    <p class="section-lede">
+      {copy.missingText} <a href={`mailto:${contact.email}`}>{contact.email}</a>
+    </p>
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>
+
+<style>
+  .formats-page {
+    max-width: 860px;
+    padding-block: 60px 96px;
+  }
+  .formats-page h1 {
+    margin-top: 0.2em;
+  }
+  .formats-page h2 {
+    font-size: 1.6rem;
+    margin-top: 3rem;
+  }
+  .section-lede {
+    color: var(--text-muted);
+    max-width: 68ch;
+  }
+  .cat-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 28px;
+  }
+  .cat header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .cat h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  .tier {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .tier.pro {
+    color: var(--mint);
+    border-color: var(--mint-deep);
+  }
+  .exts {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--mint-pale);
+    margin: 12px 0 0;
+    line-height: 1.7;
+  }
+  .carries {
+    margin: 12px 0 0;
+    color: var(--text-muted);
+    font-size: 0.93rem;
+  }
+  .carries strong {
+    color: var(--text);
+  }
+  .surface-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 28px;
+  }
+  .surface-group h3 {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  .surface-group .exts {
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+  @media (max-width: 720px) {
+    .surface-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

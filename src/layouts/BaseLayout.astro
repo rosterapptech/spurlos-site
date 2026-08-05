@@ -1,0 +1,168 @@
+---
+import '../styles/global.css';
+import Analytics from '@vercel/analytics/astro';
+import type { Lang } from '../i18n/ui';
+import { withSlash } from '../i18n/url';
+import { HREFLANG, LANG_ORDER } from '../i18n/slugAlternates';
+import { app } from '../config/site';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: Lang;
+  /** Pfad ohne Sprachpraefix, z.B. "/" oder "/blog" – fuer canonical + hreflang */
+  path?: string;
+  /** Optionales JSON-LD-Objekt (z.B. SoftwareApplication, Article) */
+  schema?: Record<string, unknown>;
+  /** Soll diese Seite indexiert werden? Rechtsseiten z.B. auf noindex. */
+  noindex?: boolean;
+  /**
+   * Explizite hreflang-Alternates (volle URLs). Noetig fuer Seiten mit
+   * sprachspezifischen Slugs (Blog, Formate-Seite), wo `/${lang}${path}` nicht
+   * stimmt. Ohne Angabe werden die Alternates aus `path` abgeleitet.
+   */
+  alternates?: { hreflang: string; href: string }[];
+  /** og:type – 'website' (Default) oder 'article' fuer Blog-Beitraege. */
+  ogType?: string;
+  /** ISO-Datum: setzt article:published_time (nur bei ogType 'article' sinnvoll). */
+  publishedTime?: string;
+  /** ISO-Datum: setzt article:modified_time. */
+  modifiedTime?: string;
+}
+
+const {
+  title,
+  description,
+  lang = 'de',
+  path = '/',
+  schema,
+  noindex = false,
+  alternates: alternatesProp,
+  ogType = 'website',
+  publishedTime,
+  modifiedTime,
+} = Astro.props;
+
+const site = Astro.site ?? new URL('https://spurlosapp.com');
+const slashPath = withSlash(path);
+const canonical = new URL(lang === 'de' ? slashPath : `/${lang}${slashPath}`, site).href;
+
+const ogLocale = { de: 'de_DE', en: 'en_US' }[lang] ?? 'de_DE';
+
+// Default: gleicher Pfad in jeder Sprache. Gilt nur fuer Seiten mit
+// sprachunabhaengigem Pfad (Homepage, /blog/, /features/...). Seiten mit
+// uebersetztem Slug MUESSEN `alternates` setzen – sonst zeigen die Links auf
+// 404s (siehe slugAlternates.ts). Dagegen laeuft scripts/check-hreflang.mjs.
+const alternates = alternatesProp ?? [
+  ...LANG_ORDER.map((l) => ({
+    hreflang: HREFLANG[l],
+    href: new URL(l === 'de' ? slashPath : `/${l}${slashPath}`, site).href,
+  })),
+  { hreflang: 'x-default', href: new URL(slashPath, site).href },
+];
+
+// Organization/WebSite als eigenstaendige Entitaeten – auf jeder Seite gleich,
+// damit Suchmaschinen und KI-Systeme einen stabilen Knowledge-Graph-Anker haben.
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': new URL('/#organization', site).href,
+      name: 'Spurlos',
+      url: site.href,
+      logo: new URL('/favicon.svg', site).href,
+      ...(app.appStoreUrl && { sameAs: [app.appStoreUrl] }),
+    },
+    {
+      '@type': 'WebSite',
+      '@id': new URL('/#website', site).href,
+      url: site.href,
+      name: 'Spurlos',
+      publisher: { '@id': new URL('/#organization', site).href },
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#050f0c" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/og.png', site).href} />
+    <meta property="og:locale" content={ogLocale} />
+    {ogType === 'article' && publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    {ogType === 'article' && modifiedTime && (
+      <meta property="article:modified_time" content={modifiedTime} />
+    )}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- JSON-LD: Organization/WebSite als stabile Entitaeten, auf jeder Seite -->
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+
+    <!-- JSON-LD: macht die Seite fuer KI-Systeme maschinenlesbar -->
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+    <Analytics />
+    <script>
+      // Aktiviert Scroll-Reveal erst wenn JS laeuft → Content immer im DOM (SEO-sicher)
+      document.documentElement.classList.add('js-ready');
+
+      const observer = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('revealed');
+              observer.unobserve(e.target);
+            }
+          }),
+        { threshold: 0.08, rootMargin: '0px 0px -32px 0px' }
+      );
+
+      // Karten & Gitter automatisch mit gestaffelten Delays
+      document
+        .querySelectorAll('.grid, .price-grid, .faq-list, .posts, .format-grid')
+        .forEach((wrap) => {
+          wrap.querySelectorAll(':scope > *').forEach((child, i) => {
+            child.setAttribute('data-reveal', '');
+            child.setAttribute('data-delay', String(Math.min(i + 1, 6)));
+            observer.observe(child);
+          });
+        });
+
+      // Ueberschriften, Abschnitte & Detailseiten-Elemente
+      document
+        .querySelectorAll(
+          'section .eyebrow, section > .container > h2, .closing-inner, ' +
+            '.feature-header, .long-desc, .back, .trust-row, ' +
+            '.blog-index .eyebrow, .blog-index h1, .blog-index .lede'
+        )
+        .forEach((el) => {
+          el.setAttribute('data-reveal', '');
+          observer.observe(el);
+        });
+    </script>
+  </body>
+</html>

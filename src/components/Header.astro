@@ -1,0 +1,96 @@
+---
+import Mark from './Mark.astro';
+import { t, type Lang } from '../i18n/ui';
+import { formatsPath } from '../i18n/formatsPath';
+import { app } from '../config/site';
+
+interface Props {
+  lang?: Lang;
+}
+const { lang = 'de' } = Astro.props;
+const tr = t(lang);
+const base = lang === 'de' ? '' : `/${lang}`;
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a href={`${base}/`} class="brand" aria-label={lang === 'de' ? 'Spurlos Startseite' : 'Spurlos home'}>
+      <Mark size={26} />
+      <span class="wordmark">Spurlos</span>
+    </a>
+
+    <nav class="nav" aria-label={lang === 'de' ? 'Hauptnavigation' : 'Main navigation'}>
+      <a href={`${base}/#features`}>{tr('nav.features')}</a>
+      <a href={formatsPath(lang)}>{tr('nav.formats')}</a>
+      <a href={`${base}/#pricing`}>{tr('nav.pricing')}</a>
+      <a href={`${base}/blog/`}>{tr('nav.blog')}</a>
+    </nav>
+
+    {
+      app.appStoreUrl ? (
+        <a href={app.appStoreUrl} class="btn btn-primary header-cta" rel="noopener">
+          {tr('nav.cta')}
+        </a>
+      ) : (
+        <span class="btn btn-soon header-cta">{tr('nav.cta')}</span>
+      )
+    }
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(5, 15, 12, 0.74);
+    border-bottom: 1px solid var(--border);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 68px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--text);
+  }
+  .brand:hover {
+    text-decoration: none;
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .nav {
+    display: flex;
+    gap: 28px;
+    margin-left: auto;
+  }
+  .nav a {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .nav a:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .header-cta {
+    font-size: 0.9rem;
+    padding: 0.6em 1.1em;
+  }
+  @media (max-width: 760px) {
+    .nav {
+      display: none;
+    }
+    .header-cta {
+      margin-left: auto;
+    }
+  }
+</style>
