@@ -34,7 +34,7 @@ liegt dann im Content oder in einer Seite, nicht im Guard.
 src/config/site.ts       Kontaktdaten, App-Store-URL, Stand-Datum, Website-Merkmale
 src/config/home.ts       kompletter Text der Startseite (de + en)
 src/config/features.ts   Funktionsbeschreibungen (de + en) + Icons
-src/config/formats.ts    Formatliste, gespiegelt aus dem FormatCatalog der App
+src/config/formats.ts    Formatliste (202 Dateitypen), gespiegelt aus der App
 src/i18n/ui.ts           Navigation, Footer, Blog-Strings
 src/i18n/formatsPath.ts  übersetzte Slugs der Formate-Seite
 src/i18n/slugAlternates.ts  HREFLANG-Map + Alternates für übersetzte Slugs
@@ -63,6 +63,15 @@ hreflang-Alternates selbst an `BaseLayout`. Der Default dort hängt stur
 **Die HREFLANG-Map existiert zweimal** – in `astro.config.mjs` (Sitemap) und in
 `src/i18n/slugAlternates.ts` (HTML). Beide müssen identisch bleiben; der
 postbuild-Guard vergleicht das Ergebnis.
+
+**Preis und Formatliste haben je eine Quelle.** Der Pro-Preis steht in
+`app` in `src/config/site.ts`; Startseite, Feature-Seiten, AGB und JSON-LD lesen
+von dort. Einzige Ausnahme ist `public/llms.txt` – eine statische Datei, die bei
+einer Preisänderung mitgepflegt werden muss (ebenso `Spurlos.storekit` und der
+App-Store-Eintrag auf App-Seite). Die Formatliste in `src/config/formats.ts` ist
+eine bewusste Kopie des `FormatCatalog` der App inkl.
+`SurfaceMetadataHandler.acceptedExtensions`; kommen in der App Formate dazu,
+hier nachziehen.
 
 **Rechtsseiten sind `noindex` und stehen nicht in der Sitemap.** Beides zugleich
 wäre ein widersprüchliches Signal.

@@ -1,4 +1,6 @@
 import type { Lang } from '../i18n/ui';
+import { app } from './site';
+import { totalFormatCount } from './formats';
 
 /**
  * Der gesamte Text der Startseite, pro Sprache. Die Seite selbst
@@ -27,8 +29,6 @@ export interface HomeCopy {
     headline: string;
     lede: string;
     link: string;
-    deepLabel: string;
-    surfaceLabel: string;
   };
   pricing: {
     eyebrow: string;
@@ -98,11 +98,8 @@ export const homeCopy: Record<Lang, HomeCopy> = {
     formats: {
       eyebrow: 'Formate',
       headline: 'Von HEIC bis Keynote.',
-      lede:
-        'Bilder, Video, Audio, PDF, Office, OpenDocument und iWork werden bis in die Metadaten hinein gereinigt. Alle übrigen Formate nimmt Spurlos ebenfalls an und entfernt zumindest die Spuren, die das Dateisystem anhängt.',
+      lede: `Fotos, Videos, Audio, PDF, Office, OpenDocument und iWork werden bis in die Metadaten hinein gereinigt. Insgesamt nimmt Spurlos ${totalFormatCount} Dateitypen an – bei allen übrigen entfernt die App zumindest die Spuren, die das Dateisystem anhängt.`,
       link: 'Alle unterstützten Formate ansehen →',
-      deepLabel: 'Tiefenreinigung',
-      surfaceLabel: 'Dateisystem-Spuren',
     },
     pricing: {
       eyebrow: 'Preis',
@@ -119,7 +116,7 @@ export const homeCopy: Record<Lang, HomeCopy> = {
         'Teilen-Menü nutzbar',
       ],
       proName: 'Spurlos Pro',
-      proPrice: '6,99 €',
+      proPrice: app.proPrice,
       proNote: 'Einmalkauf über den App Store.',
       proBullets: [
         'PDF- und Office-Dokumente bereinigen',
@@ -155,7 +152,7 @@ export const homeCopy: Record<Lang, HomeCopy> = {
       },
       {
         q: 'Was kostet Spurlos?',
-        a: 'Die Analyse aller Formate und das Bereinigen von Fotos sind kostenlos. Spurlos Pro kostet 6,99 € als Einmalkauf – kein Abo – und schaltet PDF/Office, Video/Audio, Stapelverarbeitung, selektives Entfernen und Kurzbefehle frei.',
+        a: `Die Analyse aller Formate und das Bereinigen von Fotos sind kostenlos. Spurlos Pro kostet ${app.proPrice} als Einmalkauf – kein Abo – und schaltet PDF/Office, Video/Audio, Stapelverarbeitung, selektives Entfernen und Kurzbefehle frei.`,
       },
       {
         q: 'Auf welchen Geräten läuft Spurlos?',
@@ -218,11 +215,8 @@ export const homeCopy: Record<Lang, HomeCopy> = {
     formats: {
       eyebrow: 'Formats',
       headline: 'From HEIC to Keynote.',
-      lede:
-        'Images, video, audio, PDF, Office, OpenDocument and iWork are cleaned all the way into their metadata. Every other format is accepted too, and at least the traces the file system attaches are removed.',
+      lede: `Photos, video, audio, PDF, Office, OpenDocument and iWork are cleaned all the way into their metadata. Spurlos accepts ${totalFormatCount} file types in total — for all the others it removes at least the traces the file system attaches.`,
       link: 'See all supported formats →',
-      deepLabel: 'Deep clean',
-      surfaceLabel: 'File system traces',
     },
     pricing: {
       eyebrow: 'Pricing',
@@ -239,7 +233,7 @@ export const homeCopy: Record<Lang, HomeCopy> = {
         'Share sheet included',
       ],
       proName: 'Spurlos Pro',
-      proPrice: '€6.99',
+      proPrice: app.proPriceEn,
       proNote: 'One-time purchase via the App Store.',
       proBullets: [
         'Clean PDF and Office documents',
@@ -275,7 +269,7 @@ export const homeCopy: Record<Lang, HomeCopy> = {
       },
       {
         q: 'What does Spurlos cost?',
-        a: 'Analysing any format and cleaning photos is free. Spurlos Pro is a €6.99 one-time purchase — no subscription — and unlocks PDF/Office, video/audio, batch processing, selective removal and Shortcuts.',
+        a: `Analysing any format and cleaning photos is free. Spurlos Pro is a ${app.proPriceEn} one-time purchase — no subscription — and unlocks PDF/Office, video/audio, batch processing, selective removal and Shortcuts.`,
       },
       {
         q: 'Which devices does Spurlos run on?',

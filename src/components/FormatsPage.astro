@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import type { Lang } from '../i18n/ui';
-import { deepCategories, surfaceGroups } from '../config/formats';
+import { deepCategories, surfaceExtensions, totalFormatCount } from '../config/formats';
 import { formatsPath, FORMATS_SLUG } from '../i18n/formatsPath';
 import { slugAlternates } from '../i18n/slugAlternates';
 import { formatsBreadcrumb } from '../i18n/breadcrumbs';
@@ -21,43 +21,41 @@ const alternates = slugAlternates(formatsPath, site);
 
 const copy = {
   de: {
-    title: 'Unterstützte Formate – Spurlos',
-    description:
-      'Alle Dateiformate, die Spurlos annimmt: Bilder, Video, Audio, PDF, Office, OpenDocument und iWork mit vollständiger Metadaten-Bereinigung – dazu RAW, Archive, Geodaten und mehr auf Dateisystem-Ebene.',
+    title: `Unterstützte Formate – ${totalFormatCount} Dateitypen | Spurlos`,
+    description: `Alle ${totalFormatCount} Dateitypen, die Spurlos annimmt: Fotos, Videos, Audio, PDF, Office, OpenDocument und iWork mit vollständiger Bereinigung – dazu RAW, Archive, Geodaten und mehr auf Dateisystem-Ebene.`,
     eyebrow: 'Formate',
     h1: 'Unterstützte Formate',
-    lede:
-      'Die Analyse ist für jedes hier gelistete Format kostenlos. Bei den Formaten mit Tiefenreinigung entfernt Spurlos die Metadaten im Inneren der Datei; bei allen übrigen die Spuren, die das Dateisystem anhängt.',
-    deepH2: 'Tiefenreinigung',
+    lede: `Spurlos nimmt ${totalFormatCount} Dateitypen an. Die Analyse ist bei allen kostenlos. Bei den Formaten mit vollständiger Bereinigung entfernt die App die Metadaten im Inneren der Datei; bei allen übrigen die Spuren, die das Dateisystem anhängt.`,
+    deepH2: 'Vollständige Bereinigung',
     deepLede:
       'Diese Formate werden vollständig geöffnet: Spurlos liest jedes Metadaten-Feld, zeigt es an und schreibt die Datei ohne diese Felder neu – ohne Bild- oder Videodaten neu zu kodieren.',
+    deepNote:
+      'Bei diesen Formaten werden eingebettete Metadaten wie GPS-Position, Gerät, Autor und Zeitstempel analysiert und entfernt.',
     carriesLabel: 'Typischer Inhalt',
     proLabel: 'Bereinigung mit Spurlos Pro',
     freeLabel: 'Bereinigung kostenlos',
-    surfaceH2: 'Dateisystem-Spuren',
-    surfaceLede:
-      'Diese Formate nimmt Spurlos ebenfalls an. Der Inhalt wird Byte für Byte kopiert und nicht verändert; entfernt werden die Spuren, die das Betriebssystem außen an die Datei hängt: die Herkunfts-URL eines Downloads, Finder-Tags und -Kommentare, das Quarantäne-Attribut und weitere erweiterte Attribute. Metadaten im Inneren dieser Formate werden weder angezeigt noch entfernt – die App sagt das bei jeder solchen Datei ausdrücklich.',
+    surfaceH2: 'Weitere Formate',
+    surfaceLede: `Diese ${surfaceExtensions.length} Formate nimmt Spurlos ebenfalls an. Der Dateiinhalt wird Byte für Byte kopiert und nicht verändert; entfernt werden die Spuren, die das Betriebssystem außen an die Datei hängt: die Herkunfts-URL eines Downloads, Tags und Finder-Kommentare, das Quarantäne-Attribut und weitere erweiterte Attribute. Metadaten im Inneren dieser Formate werden weder angezeigt noch entfernt – die App sagt das bei jeder solchen Datei ausdrücklich.`,
     missingH2: 'Format fehlt?',
     missingText:
       'Wenn du ein Format vermisst, schreib uns – die Liste wächst mit den Anfragen.',
   },
   en: {
-    title: 'Supported formats – Spurlos',
-    description:
-      'Every file format Spurlos accepts: images, video, audio, PDF, Office, OpenDocument and iWork with full metadata cleaning — plus RAW, archives, geodata and more at file system level.',
+    title: `Supported formats – ${totalFormatCount} file types | Spurlos`,
+    description: `All ${totalFormatCount} file types Spurlos accepts: photos, video, audio, PDF, Office, OpenDocument and iWork with full cleaning — plus RAW, archives, geodata and more at file system level.`,
     eyebrow: 'Formats',
     h1: 'Supported formats',
-    lede:
-      'Analysis is free for every format listed here. For the deep-clean formats Spurlos removes the metadata inside the file; for all others it removes the traces the file system attaches.',
-    deepH2: 'Deep clean',
+    lede: `Spurlos accepts ${totalFormatCount} file types. Analysis is free for all of them. For the formats with full cleaning the app removes the metadata inside the file; for all others the traces the file system attaches.`,
+    deepH2: 'Full cleaning',
     deepLede:
       'These formats are opened all the way: Spurlos reads every metadata field, shows it to you and rewrites the file without those fields — without re-encoding image or video data.',
+    deepNote:
+      'For these formats, embedded metadata such as GPS position, device, author and timestamps is analysed and removed.',
     carriesLabel: 'Typically contains',
     proLabel: 'Cleaning with Spurlos Pro',
     freeLabel: 'Cleaning free',
-    surfaceH2: 'File system traces',
-    surfaceLede:
-      'Spurlos accepts these formats too. The content is copied byte for byte and never modified; what gets removed are the traces the operating system attaches on the outside: the origin URL of a download, Finder tags and comments, the quarantine attribute and other extended attributes. Metadata inside these formats is neither shown nor removed — the app says so explicitly for every such file.',
+    surfaceH2: 'More formats',
+    surfaceLede: `Spurlos accepts these ${surfaceExtensions.length} formats too. The file content is copied byte for byte and never modified; what gets removed are the traces the operating system attaches on the outside: the origin URL of a download, tags and Finder comments, the quarantine attribute and other extended attributes. Metadata inside these formats is neither shown nor removed — the app says so explicitly for every such file.`,
     missingH2: 'Missing a format?',
     missingText: 'If a format is missing, write to us — the list grows with the requests.',
   },
@@ -104,20 +102,12 @@ const schema = {
         ))
       }
     </div>
+    <p class="note">{copy.deepNote}</p>
 
     <h2>{copy.surfaceH2}</h2>
     <p class="section-lede">{copy.surfaceLede}</p>
 
-    <div class="surface-list">
-      {
-        surfaceGroups.map((group) => (
-          <div class="surface-group">
-            <h3>{group.label[lang]}</h3>
-            <p class="exts">{group.extensions.join(' · ')}</p>
-          </div>
-        ))
-      }
-    </div>
+    <p class="card surface-list exts">{surfaceExtensions.join(' · ')}</p>
 
     <h2>{copy.missingH2}</h2>
     <p class="section-lede">
@@ -187,23 +177,14 @@ const schema = {
   .carries strong {
     color: var(--text);
   }
-  .surface-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 28px;
-  }
-  .surface-group h3 {
-    font-size: 0.95rem;
-    margin: 0;
-  }
-  .surface-group .exts {
+  .note {
+    margin-top: 14px;
     color: var(--text-dim);
-    margin-top: 6px;
+    font-size: 0.9rem;
   }
-  @media (max-width: 720px) {
-    .surface-list {
-      grid-template-columns: 1fr;
-    }
+  .surface-list {
+    margin-top: 28px;
+    color: var(--text-dim);
+    line-height: 1.9;
   }
 </style>

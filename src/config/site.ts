@@ -22,10 +22,15 @@ export const app = {
   fullName: 'Spurlos: Metadaten löschen',
   /** null = noch nicht veroeffentlicht. Sonst die App-Store-Produkt-URL. */
   appStoreUrl: null as string | null,
-  /** Einmalkauf, kein Abo (StoreKit: de.eliasstudios.spurlos.pro). */
-  proPrice: '6,99 €',
-  proPriceEn: '€6.99',
-  proPriceValue: '6.99',
+  /**
+   * Einmalkauf, kein Abo (StoreKit: de.eliasstudios.spurlos.pro).
+   * Alle Preisangaben der Website lesen von hier – einzige Ausnahme ist
+   * public/llms.txt, eine statische Datei ohne Template. Bei einer
+   * Preisaenderung dort mit anpassen (und im StoreKit-File der App).
+   */
+  proPrice: '3,99 €',
+  proPriceEn: '€3.99',
+  proPriceValue: '3.99',
   currency: 'EUR',
 } as const;
 
