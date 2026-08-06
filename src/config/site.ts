@@ -28,9 +28,9 @@ export const app = {
    * public/llms.txt, eine statische Datei ohne Template. Bei einer
    * Preisaenderung dort mit anpassen (und im StoreKit-File der App).
    */
-  proPrice: '3,99 €',
-  proPriceEn: '€3.99',
-  proPriceValue: '3.99',
+  proPrice: '4,99 €',
+  proPriceEn: '€4.99',
+  proPriceValue: '4.99',
   currency: 'EUR',
 } as const;
 
