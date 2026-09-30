@@ -82,17 +82,6 @@ erweitert statt ein zweiter zum selben Thema angelegt.
 
 ## Noch offen
 
-- **Domain.** `SITE` in `astro.config.mjs`, `ORIGIN` in den beiden Guard-Scripts,
-  die Sitemap-Zeile in `public/robots.txt` und die Links in `public/llms.txt`
-  stehen auf `https://spurlosapp.com`. Falls die Domain anders lautet, an diesen
-  Stellen ändern.
-- **App-Store-URL.** `app.appStoreUrl` in `src/config/site.ts` ist `null`;
-  Header, Hero, Feature-Seiten und JSON-LD zeigen deshalb „Bald im App Store"
-  ohne Link. Sobald die App live ist, dort die URL eintragen – alles andere
-  schaltet automatisch um. Auch `public/llms.txt` erwähnt den Status.
-- **Support-Adresse.** Die Website nennt `support@spurlosapp.com`. In der App
-  steht in `SpurlosConfig.supportEmail` noch `support@example.com` – vor dem
-  Release angleichen.
 - Build-Warnung `Astro.request.headers was used …` ist erwartet, siehe Kommentar
   in `src/middleware.ts`.
 

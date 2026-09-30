@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
-import type { Lang } from '../i18n/ui';
+import { t, type Lang } from '../i18n/ui';
 import { featureData, featureIcons, featureSlugs, type FeatureSlug } from '../config/features';
 import { featureBreadcrumb } from '../i18n/breadcrumbs';
 import { formatsPath } from '../i18n/formatsPath';
@@ -24,14 +24,12 @@ const copy = {
     more: 'Weitere Funktionen',
     proNote: `Diese Funktion ist Teil von Spurlos Pro – ein Einmalkauf für ${app.proPrice}, kein Abo.`,
     formatsLink: 'Welche Dateiformate unterstützt werden →',
-    soon: 'Spurlos erscheint bald im App Store.',
   },
   en: {
     back: '← All features',
     more: 'More features',
     proNote: `This feature is part of Spurlos Pro — a ${app.proPriceEn} one-time purchase, no subscription.`,
     formatsLink: 'Which file formats are supported →',
-    soon: 'Spurlos is coming to the App Store soon.',
   },
 }[lang];
 
@@ -86,15 +84,9 @@ const schema = {
       </div>
     </section>
 
-    {
-      app.appStoreUrl ? (
-        <a href={app.appStoreUrl} class="btn btn-primary cta" rel="noopener">
-          {lang === 'de' ? 'Im App Store laden' : 'Get it on the App Store'}
-        </a>
-      ) : (
-        <p class="soon">{copy.soon}</p>
-      )
-    }
+    <a href={app.appStoreUrl} class="btn btn-primary cta" rel="noopener">
+      {t(lang)('nav.cta')}
+    </a>
   </main>
   <Footer lang={lang} />
 </BaseLayout>
@@ -202,10 +194,6 @@ const schema = {
   }
   .cta {
     margin-top: 48px;
-  }
-  .soon {
-    margin-top: 48px;
-    color: var(--text-muted);
   }
   @media (max-width: 720px) {
     .grid {

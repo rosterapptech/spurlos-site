@@ -72,7 +72,7 @@ const organizationSchema = {
       name: 'Spurlos',
       url: site.href,
       logo: new URL('/favicon.svg', site).href,
-      ...(app.appStoreUrl && { sameAs: [app.appStoreUrl] }),
+      sameAs: [app.appStoreUrl],
     },
     {
       '@type': 'WebSite',

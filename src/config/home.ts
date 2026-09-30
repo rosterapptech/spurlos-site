@@ -15,7 +15,7 @@ export interface HomeCopy {
     headlineAccent: string;
     lede: string;
     ctaSecondary: string;
-    ctaSoon: string;
+    cta: string;
   };
   trust: string[];
   features: { eyebrow: string; headline: string; lede: string; more: string };
@@ -47,7 +47,7 @@ export interface HomeCopy {
   faqEyebrow: string;
   faqHeadline: string;
   faqs: { q: string; a: string }[];
-  closing: { headline: string; note: string };
+  closing: { headline: string };
 }
 
 export const homeCopy: Record<Lang, HomeCopy> = {
@@ -64,7 +64,7 @@ export const homeCopy: Record<Lang, HomeCopy> = {
       lede:
         'Ein Foto nennt metergenau den Ort, an dem es entstand – oft deine Wohnadresse. Ein Word-Dokument nennt deinen Namen und jeden, der es bearbeitet hat. Spurlos macht diese unsichtbaren Daten sichtbar und entfernt sie mit einem Tipp.',
       ctaSecondary: 'Funktionen ansehen',
-      ctaSoon: 'Bald im App Store',
+      cta: 'Im App Store laden',
     },
     trust: ['Kein Netzwerkcode', 'Kein Konto', 'Kein Tracking', 'Kein Abo'],
     features: {
@@ -165,7 +165,6 @@ export const homeCopy: Record<Lang, HomeCopy> = {
     ],
     closing: {
       headline: 'Teilen, ohne sich mitzuteilen.',
-      note: 'Spurlos erscheint bald im App Store.',
     },
   },
   en: {
@@ -181,7 +180,7 @@ export const homeCopy: Record<Lang, HomeCopy> = {
       lede:
         'A photo reveals where it was taken down to the meter — often your home address. A Word document names you and everyone who edited it. Spurlos makes this invisible data visible and removes it in one tap.',
       ctaSecondary: 'See the features',
-      ctaSoon: 'Coming to the App Store',
+      cta: 'Download on the App Store',
     },
     trust: ['No networking code', 'No account', 'No tracking', 'No subscription'],
     features: {
@@ -282,7 +281,6 @@ export const homeCopy: Record<Lang, HomeCopy> = {
     ],
     closing: {
       headline: 'Share without sharing yourself.',
-      note: 'Spurlos is coming to the App Store soon.',
     },
   },
 };

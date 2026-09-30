@@ -6,6 +6,7 @@ import Header from './Header.astro';
 import Footer from './Footer.astro';
 import RelatedPosts from './RelatedPosts.astro';
 import { t, type Lang } from '../i18n/ui';
+import { app } from '../config/site';
 import { blogAlternates } from '../i18n/blogAlternates';
 import { blogBreadcrumb } from '../i18n/breadcrumbs';
 
@@ -95,6 +96,17 @@ const schema = {
       )
     }
 
+    <aside class="card app-cta">
+      <p>
+        {
+          lang === 'de'
+            ? 'Spurlos zeigt und entfernt Metadaten direkt auf deinem iPhone – ohne Upload, ohne Konto.'
+            : 'Spurlos shows and removes metadata right on your iPhone — no upload, no account.'
+        }
+      </p>
+      <a href={app.appStoreUrl} class="btn btn-primary" rel="noopener">{tr('nav.cta')}</a>
+    </aside>
+
     <RelatedPosts lang={lang} currentId={post.id} tags={post.data.tags} />
   </main>
   <Footer lang={lang} />
@@ -168,6 +180,28 @@ const schema = {
   .body :global(th) {
     color: var(--text);
     font-weight: 600;
+  }
+
+  .app-cta {
+    margin-top: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .app-cta p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .app-cta .btn {
+    flex-shrink: 0;
+  }
+  @media (max-width: 600px) {
+    .app-cta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 
   .faq {

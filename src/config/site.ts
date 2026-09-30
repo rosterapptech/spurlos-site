@@ -13,15 +13,13 @@ export const contact = {
   ustId: 'DE334938867',
 } as const;
 
-// App-Eckdaten. Die App ist noch nicht veroeffentlicht: sobald sie im App Store
-// steht, hier die URL eintragen – Header, Hero, Closing-CTA und JSON-LD lesen
-// alle diesen einen Wert und schalten dann automatisch von "bald verfuegbar"
-// auf einen echten Link um.
+// App-Eckdaten. Header, Hero, Closing-CTA, Feature-Seiten, Blogartikel und
+// JSON-LD lesen die App-Store-URL von hier.
 export const app = {
   name: 'Spurlos',
   fullName: 'Spurlos: Metadaten löschen',
-  /** null = noch nicht veroeffentlicht. Sonst die App-Store-Produkt-URL. */
-  appStoreUrl: null as string | null,
+  /** Laenderneutral – Apple leitet auf den Store des Besuchers weiter. */
+  appStoreUrl: 'https://apps.apple.com/app/id6800891073',
   /**
    * Einmalkauf, kein Abo (StoreKit: de.eliasstudios.spurlos.pro).
    * Alle Preisangaben der Website lesen von hier – einzige Ausnahme ist

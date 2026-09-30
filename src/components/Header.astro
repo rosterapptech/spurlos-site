@@ -27,13 +27,9 @@ const base = lang === 'de' ? '' : `/${lang}`;
     </nav>
 
     {
-      app.appStoreUrl ? (
-        <a href={app.appStoreUrl} class="btn btn-primary header-cta" rel="noopener">
-          {tr('nav.cta')}
-        </a>
-      ) : (
-        <span class="btn btn-soon header-cta">{tr('nav.cta')}</span>
-      )
+      <a href={app.appStoreUrl} class="btn btn-primary header-cta" rel="noopener">
+        {tr('nav.cta')}
+      </a>
     }
   </div>
 </header>

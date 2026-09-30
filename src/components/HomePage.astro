@@ -35,11 +35,9 @@ const schema = {
       description: c.meta.description,
       inLanguage: ['de', 'en'],
       url: new URL(base === '' ? '/' : `${base}/`, site).href,
-      ...(app.appStoreUrl && {
-        sameAs: [app.appStoreUrl],
-        downloadUrl: app.appStoreUrl,
-        installUrl: app.appStoreUrl,
-      }),
+      sameAs: [app.appStoreUrl],
+      downloadUrl: app.appStoreUrl,
+      installUrl: app.appStoreUrl,
       offers: [
         {
           '@type': 'Offer',
@@ -86,15 +84,9 @@ const schema = {
           <h1>{c.hero.headline}<br /><span class="accent">{c.hero.headlineAccent}</span></h1>
           <p class="lede">{c.hero.lede}</p>
           <div class="hero-cta">
-            {
-              app.appStoreUrl ? (
-                <a href={app.appStoreUrl} class="btn btn-primary" rel="noopener">
-                  {c.hero.ctaSoon}
-                </a>
-              ) : (
-                <span class="btn btn-soon">{c.hero.ctaSoon}</span>
-              )
-            }
+            <a href={app.appStoreUrl} class="btn btn-primary" rel="noopener">
+              {c.hero.cta}
+            </a>
             <a href={`${base}/#features`} class="btn btn-ghost">{c.hero.ctaSecondary}</a>
           </div>
         </div>
@@ -234,15 +226,9 @@ const schema = {
     <section class="closing">
       <div class="container closing-inner">
         <h2>{c.closing.headline}</h2>
-        {
-          app.appStoreUrl ? (
-            <a href={app.appStoreUrl} class="btn btn-primary" rel="noopener">
-              {c.hero.ctaSoon}
-            </a>
-          ) : (
-            <p class="closing-note">{c.closing.note}</p>
-          )
-        }
+        <a href={app.appStoreUrl} class="btn btn-primary" rel="noopener">
+          {c.hero.cta}
+        </a>
       </div>
     </section>
   </main>
@@ -514,10 +500,6 @@ const schema = {
   }
   .closing h2 {
     max-width: 18ch;
-  }
-  .closing-note {
-    color: var(--text-muted);
-    margin: 0;
   }
 
   @media (max-width: 900px) {

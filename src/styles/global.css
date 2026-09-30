@@ -155,16 +155,6 @@ section {
   color: var(--text);
   border-color: var(--border);
 }
-/* Solange die App nicht im Store ist: gleiche Optik, aber kein Link. */
-.btn-soon {
-  background: var(--surface-2);
-  color: var(--text-muted);
-  border-color: var(--border);
-  cursor: default;
-}
-.btn-soon:hover {
-  transform: none;
-}
 
 /* Karten */
 .card {
